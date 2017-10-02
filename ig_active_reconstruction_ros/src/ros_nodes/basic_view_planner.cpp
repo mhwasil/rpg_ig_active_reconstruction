@@ -64,7 +64,9 @@ int main(int argc, char **argv)
   
   // for the termination critera
   unsigned int max_calls;
-  ros_tools::getParam<unsigned int, int>( max_calls, "max_calls", 20 );
+  ros_tools::getParam<unsigned int, int>( max_calls, "max_calls", 5 ); //default 20, also change in launch file
+  
+
   
   
   
@@ -119,27 +121,27 @@ int main(int argc, char **argv)
       
       switch(status)
       {
-	case iar::BasicViewPlanner::Status::UNINITIALIZED:
-	  ROS_INFO_STREAM("BasicViewPlanner::Status::UNINITIALIZED");
-	  break;
-	case iar::BasicViewPlanner::Status::IDLE:
-	  ROS_INFO_STREAM("BasicViewPlanner::Status::IDLE");
-	  break;
-	case iar::BasicViewPlanner::Status::PAUSED:
-	  ROS_INFO_STREAM("BasicViewPlanner::Status::PAUSED");
-	  break;
-	case iar::BasicViewPlanner::Status::DEMANDING_NEW_DATA:
-	  ROS_INFO_STREAM("BasicViewPlanner::Status::DEMANDING_NEW_DATA");
-	  break;
-	case iar::BasicViewPlanner::Status::DEMANDING_VIEWSPACE:
-	  ROS_INFO_STREAM("BasicViewPlanner::Status::DEMANDING_VIEWSPACE");
-	  break;
-	case iar::BasicViewPlanner::Status::NBV_CALCULATIONS:
-	  ROS_INFO_STREAM("BasicViewPlanner::Status::NBV_CALCULATIONS");
-	  break;
-	case iar::BasicViewPlanner::Status::DEMANDING_MOVE:
-	  ROS_INFO_STREAM("BasicViewPlanner::Status::DEMANDING_MOVE");
-	  break;
+      	case iar::BasicViewPlanner::Status::UNINITIALIZED:
+      	  ROS_INFO_STREAM("BasicViewPlanner::Status::UNINITIALIZED");
+      	  break;
+      	case iar::BasicViewPlanner::Status::IDLE:
+      	  ROS_INFO_STREAM("BasicViewPlanner::Status::IDLE");
+      	  break;
+      	case iar::BasicViewPlanner::Status::PAUSED:
+      	  ROS_INFO_STREAM("BasicViewPlanner::Status::PAUSED");
+      	  break;
+      	case iar::BasicViewPlanner::Status::DEMANDING_NEW_DATA:
+      	  ROS_INFO_STREAM("BasicViewPlanner::Status::DEMANDING_NEW_DATA");
+      	  break;
+      	case iar::BasicViewPlanner::Status::DEMANDING_VIEWSPACE:
+      	  ROS_INFO_STREAM("BasicViewPlanner::Status::DEMANDING_VIEWSPACE");
+      	  break;
+      	case iar::BasicViewPlanner::Status::NBV_CALCULATIONS:
+      	  ROS_INFO_STREAM("BasicViewPlanner::Status::NBV_CALCULATIONS");
+      	  break;
+      	case iar::BasicViewPlanner::Status::DEMANDING_MOVE:
+      	  ROS_INFO_STREAM("BasicViewPlanner::Status::DEMANDING_MOVE");
+      	  break;
       };
       boost::this_thread::sleep_for( boost::chrono::seconds(2) );
     }
@@ -160,45 +162,43 @@ int main(int argc, char **argv)
     switch(user_input)
     {
       case 'g':
-	std::cout<<"Starting...";
-	view_planner.run();
-	break;
+      	std::cout<<"Starting...";
+      	view_planner.run();
+      	break;
       case 'p':
-	std::cout<<"Pausing...";
-	view_planner.pause();
-	break;
+        std::cout<<"Pausing...";
+        view_planner.pause();
+        break;
       case 's':
-	while(true)
-	{
-	  std::cout<<"\n\nAre you sure you want to stop the procedure? (y/n)\n";
-	  std::cin>>user_input;
-	  if(user_input=='y')
-	  {
-	    std::cout<<"Stopping...";
-	    view_planner.stop();
-	    break;
-	  }
-	  else if(user_input=='n')
-	    break;
-	};
-	
-	break;
+      	while(true)
+      	{
+      	  std::cout<<"\n\nAre you sure you want to stop the procedure? (y/n)\n";
+      	  std::cin>>user_input;
+      	  if(user_input=='y')
+      	  {
+      	    std::cout<<"Stopping...";
+      	    view_planner.stop();
+      	    break;
+      	  }
+      	  else if(user_input=='n')
+      	    break;
+        };
+        break;
       case 'q':
-	while(true)
-	{
-	  std::cout<<"\n\nAre you sure you want to quit the program? (y/n)\n";
-	  std::cin>>user_input;
-	  if(user_input=='y')
-	  {
-	    std::cout<<"Quitting...";
-	    view_planner.stop();
-	    return 0;
-	  }
-	  else if(user_input=='n')
-	    break;
-	};
-	
-	break;
+        while(true)
+        {
+          std::cout<<"\n\nAre you sure you want to quit the program? (y/n)\n";
+          std::cin>>user_input;
+          if(user_input=='y')
+          {
+            std::cout<<"Quitting...";
+            view_planner.stop();
+            return 0;
+          }
+          else if(user_input=='n')
+            break;
+        };
+        break;
     };
   }
   

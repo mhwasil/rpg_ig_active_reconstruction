@@ -124,10 +124,9 @@ namespace ig_active_reconstruction
     {
       if( pauseProcedure_ )
       {
-	pauseProcedure_ = false;
-	return true;
+        pauseProcedure_ = false;
+        return true;
       }
-      
       return false;
     }
     
@@ -155,10 +154,10 @@ namespace ig_active_reconstruction
   bool BasicViewPlanner::isReady()
   {
     return robot_comm_unit_!=nullptr
-	&& views_comm_unit_!=nullptr
-	&& world_comm_unit_!=nullptr
-	&& utility_calculator_!=nullptr
-	&& goal_evaluation_module_!=nullptr;
+  	&& views_comm_unit_!=nullptr
+  	&& world_comm_unit_!=nullptr
+  	&& utility_calculator_!=nullptr
+  	&& goal_evaluation_module_!=nullptr;
   }
   
   void BasicViewPlanner::main()
@@ -175,16 +174,17 @@ namespace ig_active_reconstruction
       *viewspace_ = views_comm_unit_->getViewSpace();
       
       if( !runProcedure_ ) // exit point
-	{
-	  status_ = Status::IDLE;
-	  runProcedure_ = false;
-	  return;
-	}
+    	{
+    	  status_ = Status::IDLE;
+    	  runProcedure_ = false;
+    	  return;
+    	}
       pausePoint();
       
     }while( viewspace_->empty() );
     
     unsigned int reception_nr = 0;
+    unsigned int moving_nr = 0;
     
     do
     {
@@ -194,62 +194,66 @@ namespace ig_active_reconstruction
       
       if(view_candidate_ids.empty())
       {
-	break;
+	     break;
       }
       
       // receive data....................................................
       robot::CommunicationInterface::ReceptionInfo data_retrieval_status;
       do
       {
-	status_ = Status::DEMANDING_NEW_DATA;
-	data_retrieval_status = robot_comm_unit_->retrieveData();
-	
-	if( !runProcedure_ ) // exit point
-	{
-	  status_ = Status::IDLE;
-	  runProcedure_ = false;
-	  return;
-	}
-	pausePoint();
+      	status_ = Status::DEMANDING_NEW_DATA;
+      	data_retrieval_status = robot_comm_unit_->retrieveData(); //do look at workspace, 
+      	
+      	if( !runProcedure_ ) // exit point
+      	{
+      	  status_ = Status::IDLE;
+      	  runProcedure_ = false;
+      	  return;
+      	}
+      	pausePoint();
 	
       }while( data_retrieval_status != robot::CommunicationInterface::ReceptionInfo::SUCCEEDED );
       
-      std::cout<<"\nData reception nr. "<<++reception_nr<<".";
+      std::cout<<"\nData reception nr. "<<++reception_nr<<"." <<"\n";
       
       // getting cost and ig is wrapped in the utility calculator..................
       status_ = Status::NBV_CALCULATIONS;
       views::View::IdType nbv_id = utility_calculator_->getNbv(view_candidate_ids,viewspace_);
+      
+      //result for next view (the next pose)
       views::View nbv = viewspace_->getView(nbv_id);
       
       // check termination criteria ...............................................
       if( goal_evaluation_module_->isDone() )
       {
-	std::cout<<"\n\nTermination criteria was fulfilled. Reconstruction procedure ends.\n\n";
-	break;
+        std::cout<<"\n\nTermination criteria was fulfilled. Reconstruction procedure ends.\n\n";
+        std::cout<<"Number of moving: "<< moving_nr << "\n";
+        break;
       }
       
       // move to next best view....................................................
       bool successfully_moved = false;
       do
       {
-	status_ = Status::DEMANDING_MOVE;
-	successfully_moved = robot_comm_unit_->moveTo(nbv);
-	
-	if( !runProcedure_ ) // exit point
-	{
-	  status_ = Status::IDLE;
-	  runProcedure_ = false;
-	  return;
-	}
-	pausePoint();
+      	status_ = Status::DEMANDING_MOVE;
+      	successfully_moved = robot_comm_unit_->moveTo(nbv);
+      	moving_nr++;
+      	if( !runProcedure_ ) // exit point
+      	{
+      	  status_ = Status::IDLE;
+      	  runProcedure_ = false;
+      	  return;
+      	}
+      	pausePoint();
 	
       }while(!successfully_moved);
-      
+      std::cout<<"Number of moving: " << moving_nr << "\n";
+
       // update viewspace
       viewspace_->setVisited(nbv_id);
       if( config_.max_visits!=-1 && viewspace_->timesVisited(nbv_id) >= config_.max_visits )
-	viewspace_->setBad(nbv_id);
-      
+        viewspace_->setBad(nbv_id);
+
     }while( runProcedure_ );
     
     status_ = Status::IDLE;
