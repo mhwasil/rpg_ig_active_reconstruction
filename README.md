@@ -1,0 +1,1 @@
+This project uses Information Gain calculation and octomap representation proposed by Stefan Isler et al. In this project, there is an example using flying stereo cameras for constructing 3D model in Gazebo. This work aims at developing and implementing IG to real youbot with 5 DoF arm for 3D object exploration in a RoboCup@Work environment.
