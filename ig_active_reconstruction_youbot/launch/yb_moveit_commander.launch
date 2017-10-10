@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<launch>
+	<node pkg="ig_active_reconstruction_youbot" type="yb_moveit_commander" name="yb_moveit_commander" clear_params="true" output="screen">
+    	<param name="yb_viewspace_file_path" value="$(find ig_active_reconstruction_youbot)/config/yb_6_views.txt" />
+	</node>
+</launch>

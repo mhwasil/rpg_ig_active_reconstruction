@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<launch>
+<node pkg="topic_tools" type="relay" name="yb_cam_to_octomap" args="/arm_cam3d/depth/points /world/pcl_input" output="screen"/>
+</launch>

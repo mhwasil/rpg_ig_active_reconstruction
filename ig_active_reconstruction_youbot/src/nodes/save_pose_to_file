@@ -1,0 +1,19 @@
+#!/usr/bin/env python
+
+import rospy
+import tf
+from math import pi
+import rospkg
+
+if __name__ = "__main__":
+    rospy.init_node("save_pose_to_file")
+
+    done = False
+    
+    while(not rospy.shutdown() and not done):
+        rospy.loginfo("\nPress s to save: ")
+        input_string = raw_input()
+        if input_string is "s":
+
+
+               
