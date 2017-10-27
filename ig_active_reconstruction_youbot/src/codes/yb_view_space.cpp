@@ -8,10 +8,18 @@ namespace ig_active_reconstruction_youbot
 {
 namespace views
 {
-  void ViewSpace::get_joints_space( std::string yb_viewspace_file_path )
+
+  /*ViewSpace::ViewSpace ( ros::NodeHandle nh )
+  {
+    nh_ = nh;
+    //robot_moving_service_ = nh.advertiseService("youbot/move_to", &RosServerYoubot::moveToService, this );
+    robot_moving_to_joints_service_ = nh.advertiseService("youbot/move_to_joints", &ViewSpace::moveToJointsService, this );
+  }
+*/
+  void ViewSpace::set_joints_space( std::string yb_jointspace_file_path )
   {
 
-    std::ifstream in( yb_viewspace_file_path, std::ifstream::in );
+    std::ifstream in( yb_jointspace_file_path, std::ifstream::in );
     unsigned int nr_of_views;
     bool success = static_cast<bool>(in >> nr_of_views);
 
@@ -36,6 +44,31 @@ namespace views
     }
   }
 
+  void ViewSpace::set_poses_space( std::string yb_posespace_file_path )
+  {
+    std::ifstream in( yb_posespace_file_path, std::ifstream::in );
+    unsigned int nr_of_views;
+    bool success = static_cast<bool>(in >> nr_of_views);
+
+    geometry_msgs::Pose pose;
+
+    int id_ = 0;
+    for( unsigned int i=0; i<nr_of_views; ++i )
+    {
+      success = success && ( in>>pose.position.x );
+      success = success && ( in>>pose.position.y );
+      success = success && ( in>>pose.position.z );
+      success = success && ( in>>pose.orientation.x );
+      success = success && ( in>>pose.orientation.y );
+      success = success && ( in>>pose.orientation.z );
+      success = success && ( in>>pose.orientation.w );
+
+      std::string id = std::to_string(id_);
+      ViewSpace::set_poses_map( pose, id );
+      id_ += 2;
+    }
+  }
+
   void ViewSpace::set_joints_map( double joint_0, double joint_1, double joint_2, double joint_3, double joint_4 , std::string id)
   {
     std::map<std::string, double> wrapper;
@@ -48,9 +81,26 @@ namespace views
     //joints_map_[id] = wrapper;
   }
 
+  void ViewSpace::set_poses_map( geometry_msgs::Pose& pose, std::string id )
+  {
+    poses_map_.insert(std::pair<std::string, geometry_msgs::Pose>(id, pose));
+  }
+
   std::map<std::string, std::map<std::string, double> > ViewSpace::get_joints_map()
   {
     return joints_map_;
+  }
+
+  std::map<std::string, geometry_msgs::Pose > ViewSpace::get_poses_map()
+  {
+    return poses_map_;
+  }
+
+  
+  bool moveToJointsService( ig_active_reconstruction_msgs::youbotMoveToOrder::Request& req, 
+                                    ig_active_reconstruction_msgs::youbotMoveToOrder::Response& res )
+  {
+    
   }
 
 }

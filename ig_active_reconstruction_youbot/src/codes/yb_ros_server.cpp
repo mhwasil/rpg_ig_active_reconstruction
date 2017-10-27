@@ -22,9 +22,11 @@
 #include <ig_active_reconstruction_msgs/ybMoveToJoints.h>
 #include "ig_active_reconstruction_youbot/yb_ros_server.hpp"
 #include <moveit/move_group_interface/move_group.h>
+#include "ig_active_reconstruction_msgs/youbotMoveToOrder.h"
 #include "ros/ros.h"
 #include <fstream>
 #include <stdexcept>
+#include "geometry_msgs/PoseStamped.h"
 //#include "ig_active_reconstruction_ros/robot_ros_server_ci.hpp"
 //#include "ig_active_reconstruction_ros/robot_conversions.hpp"
 //#include "ig_active_reconstruction_ros/views_conversions.hpp"
@@ -35,60 +37,49 @@ namespace ig_active_reconstruction_youbot
 namespace robot
 {
 
-  RosServerYoubot::RosServerYoubot ( ros::NodeHandle nh, std::map<std::string, std::map<std::string, double> > joints_map )
+  RosServerYoubot::RosServerYoubot ( ros::NodeHandle nh, std::map<std::string, std::map<std::string, double> > joints_map,
+                                      std::map<std::string, geometry_msgs::Pose> poses_map )
   {
     joints_map_ = joints_map;
+    poses_map_ = poses_map;
     robot_moving_service_ = nh.advertiseService("youbot/move_to", &RosServerYoubot::moveToService, this );
-    robot_moving_to_joints_service_ = nh.advertiseService("youbot/move_to_joints", &RosServerYoubot::moveToJointsService, this );
+    //robot_moving_to_joints_service_ = nh.advertiseService("youbot/move_to_joints", &RosServerYoubot::moveToJointsService, this );
   }
 
-/*  std::map<std::string, double> RosServerYoubot::get_joints_map()
-  {
-    return joints_map_;
-  }*/
-
-	bool RosServerYoubot::moveToService(ig_active_reconstruction_msgs::yb_move_arm_using_joints::Request  &req,
-            ig_active_reconstruction_msgs::yb_move_arm_using_joints::Response &res)
+	bool RosServerYoubot::moveToService( ig_active_reconstruction_msgs::youbotMoveToOrder::Request& req, 
+                                    ig_active_reconstruction_msgs::youbotMoveToOrder::Response& res )
   {
 
-    moveit::planning_interface::MoveGroup group("arm_1");
+    geometry_msgs::Pose pose;
+    pose = req.pose;
+    std::string id = RosServerYoubot::poseToJoints( pose );
+    bool success = RosServerYoubot::moveArmUsingJoints( joints_map_.at(id) );
+    res.success = success;
+    return res.success;
+  }
 
-    ros::AsyncSpinner spinner(1);
-    spinner.start();
-
-    // group.setPlanningTime(10);
-    // ROS_INFO_NAMED("Arm_1", "Reference frame: %s", group.getPlanningFrame().c_str());
-    // ROS_INFO_NAMED("Arm_1", "End effector link: %s", group.getEndEffectorLink().c_str());
-
-    //std::map<std::string, double> joints_req = RosServerYoubot::joints_wrapper( req.joints );
-
-    std::map<std::string, double> wrapper;
-    wrapper["arm_joint_1"] = req.joint_0;
-    wrapper["arm_joint_2"] = req.joint_1;
-    wrapper["arm_joint_3"] = req.joint_2;
-    wrapper["arm_joint_4"] = req.joint_3;
-    wrapper["arm_joint_5"] = req.joint_4;
-
-    group.setJointValueTarget( wrapper );
-    group.move();
-
-    move_group_interface::MoveGroup::Plan plan;
-    if (!group.plan(plan))
+  //return joints cnfiguration
+  std::string RosServerYoubot::poseToJoints( geometry_msgs::Pose pose )
+  {
+    geometry_msgs::Pose ordered_pose;
+    ordered_pose = pose;
+    std::string key;
+    geometry_msgs::Pose reference_pose;
+    for( auto pm : poses_map_)
     {
-      ROS_FATAL("Cannot execute motion. No motion plan found. Aborting.");
-      exit(-1);
-      res.success = false;
+      reference_pose = pm.second;
+      if ( ordered_pose.position.x == reference_pose.position.x &&
+           ordered_pose.position.y == reference_pose.position.y &&
+           ordered_pose.position.z == reference_pose.position.z ) 
+      {
+        key = pm.first;
+        break;
+      }
     }
-    res.success = true;
-    //non blocking request
-    group.asyncExecute(plan); 
-    // cancel motion after some times
-    sleep(0.1);
-    group.stop();
-    sleep(1.0); //wait for stop command
 
-    return true;
+    return key;
   }
+
 
   bool RosServerYoubot::moveToJointsService( ig_active_reconstruction_msgs::ybMoveToJoints::Request& req, 
                                     ig_active_reconstruction_msgs::ybMoveToJoints::Response& res )
@@ -103,7 +94,7 @@ namespace robot
         std::cout<<view_.first<<" = "<<view_.second<<"\n";
     }*/
 
-    return true;
+    return res.success;
   }
 
   bool RosServerYoubot::moveArmUsingJoints( std::map<std::string, double> joints_map )
@@ -113,7 +104,7 @@ namespace robot
     ros::AsyncSpinner spinner(1);
     spinner.start();
 
-    group.setPlanningTime(10);
+    //group.setPlanningTime(10);
     ROS_INFO_NAMED("Arm_1", "Reference frame: %s", group.getPlanningFrame().c_str());
     ROS_INFO_NAMED("Arm_1", "End effector link: %s", group.getEndEffectorLink().c_str());
 

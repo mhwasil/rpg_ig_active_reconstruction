@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<package>
+  <name>ig_youbot_ros_implementation</name>
+  <version>0.9.0</version>
+  <description>The ig_youbot_ros_implementation package</description>
+
+  <!-- One maintainer tag required, multiple allowed, one person per tag -->
+  <!-- Example:  -->
+  <!-- <maintainer email="jane.doe@example.com">Jane Doe</maintainer> -->
+  <maintainer email="emwe@todo.todo">emwe</maintainer>
+
+
+  <!-- One license tag required, multiple allowed, one license per tag -->
+  <!-- Commonly used license strings: -->
+  <!--   BSD, MIT, Boost Software License, GPLv2, GPLv3, LGPLv2.1, LGPLv3 -->
+  <license>TODO</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>cmake_modules</build_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend >urdf</build_depend>
+  <build_depend >ig_active_reconstruction</build_depend>
+  <build_depend >ig_active_reconstruction_msgs</build_depend>
+  <build_depend >ig_active_reconstruction_ros</build_depend>
+  <build_depend >ig_active_reconstruction_octomap</build_depend>
+  <build_depend >ig_active_reconstruction_youbot</build_depend>
+  <build_depend >movements</build_depend>
+  <build_depend >tf</build_depend>
+  <build_depend >gazebo_msgs</build_depend>
+  <build_depend >geometry_msgs</build_depend>
+  <build_depend >sensor_msgs</build_depend>
+  <build_depend>moveit_core</build_depend>
+  <build_depend>moveit_ros_planning_interface</build_depend>
+  <build_depend>moveit_ros_perception</build_depend>
+
+  <run_depend>roscpp</run_depend>
+  <run_depend >urdf</run_depend>
+  <run_depend >ig_active_reconstruction</run_depend>
+  <run_depend >ig_active_reconstruction_msgs</run_depend>
+  <run_depend >ig_active_reconstruction_ros</run_depend>
+  <run_depend >ig_active_reconstruction_octomap</run_depend>
+  <run_depend >ig_active_reconstruction_youbot</run_depend>
+  <run_depend >movements</run_depend>
+  <run_depend >tf</run_depend>
+  <run_depend >gazebo_msgs</run_depend>
+  <run_depend >geometry_msgs</run_depend>
+  <run_depend >sensor_msgs</run_depend>
+  
+  <!--moveit-->
+  <run_depend>moveit_core</run_depend>
+  <run_depend>moveit_fake_controller_manager</run_depend>
+  <run_depend>moveit_ros_planning_interface</run_depend>
+  <run_depend>moveit_ros_perception</run_depend>
+
+ 
+</package>

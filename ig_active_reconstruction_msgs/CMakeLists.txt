@@ -35,6 +35,7 @@ add_service_files(
   ybMoveToOrder.srv
   yb_move_arm_using_joints.srv
   ybMoveToJoints.srv
+  youbotMoveToOrder.srv
 )
 
 generate_messages(

@@ -279,7 +279,7 @@ namespace ig_active_reconstruction
 	
       }while(!successfully_moved);
 
-      bool successfully_move_arm = false;
+      /*bool successfully_move_arm = false;
       do
       {
         ros::ServiceClient joint_client = nh.serviceClient<ig_active_reconstruction_msgs::ybMoveToJoints>("youbot/move_to_joints");
@@ -304,7 +304,7 @@ namespace ig_active_reconstruction
         successfully_move_arm = move_join_srv.response.success;
         pausePoint();
 
-      }while(!successfully_move_arm);
+      }while(!successfully_move_arm);*/
 
       //std::cout<<"Number of moving: " << moving_nr << "\n";
 

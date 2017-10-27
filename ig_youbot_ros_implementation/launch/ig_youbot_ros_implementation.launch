@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<launch>
+  <node pkg="ig_youbot_ros_implementation" type="robot_interface" name="robot_interface" clear_params="true" output="screen">
+    
+    <param name="model_name" value="flying_stereo_cam" />
+    <param name="camera_frame_name" value="cam_pos" /> <!--cam_pos-->
+    <param name="world_frame_name" value="odom" />
+    <param name="sensor_in_topic" value="/camera/points2" /> <!--/camera/points2-->
+    <param name="sensor_out_name" value="/world/pcl_input" />
+
+
+    <param name="yb_model_name" value="youbot" />
+    <param name="yb_eef_frame_name" value="arm_link_5" />
+    <param name="yb_world_frame_name" value="odom" />
+    
+  </node>
+
+  <node pkg="tf" type="static_transform_publisher" name="world_to_odom" args="0 0 0 0 0 0 1 /odom /world 100" />
+   
+  <!--node pkg="rviz" type="rviz" name="rviz" clear_params="true" output="screen" args="-d $(find ig_youbot_ros_implementation)/config/bunny.rviz"/-->
+</launch>

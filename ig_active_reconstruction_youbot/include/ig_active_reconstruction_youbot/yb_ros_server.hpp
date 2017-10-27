@@ -23,6 +23,8 @@
 #include "ig_active_reconstruction_msgs/yb_move_arm_using_joints.h"
 #include "ig_active_reconstruction_msgs/ybMoveToJoints.h"
 #include "ig_active_reconstruction_youbot/yb_view_space.hpp"
+#include "ig_active_reconstruction_msgs/youbotMoveToOrder.h"
+#include "geometry_msgs/PoseStamped.h"
 
 namespace ig_active_reconstruction_youbot
 {
@@ -42,7 +44,8 @@ namespace robot
      * @param nh ROS node handle defines the namespace in which ROS communication will be carried out.
      * @param linked_interface (optional) directly add the interface that is linked internally (to which requests are forwarded.
      */
-    RosServerYoubot( ros::NodeHandle nh, std::map<std::string,std::map<std::string, double> > joints_map );
+    RosServerYoubot( ros::NodeHandle nh, std::map<std::string,std::map<std::string, double> > joints_map,
+                       std::map<std::string, geometry_msgs::Pose> poses_map );
 
     std::map<std::string, double> get_joints_map();
 
@@ -53,16 +56,24 @@ namespace robot
     
   protected:    
 
-    bool moveToService( ig_active_reconstruction_msgs::yb_move_arm_using_joints::Request& req, ig_active_reconstruction_msgs::yb_move_arm_using_joints::Response& res );
+    bool moveToService( ig_active_reconstruction_msgs::youbotMoveToOrder::Request& req, 
+                                    ig_active_reconstruction_msgs::youbotMoveToOrder::Response& res );
+    //return joints cnfiguration
+    std::string poseToJoints( geometry_msgs::Pose pose );
+
+     //execute joint using moveit
+    bool executeJoints( std::map<std::string, double> joints );
 
     bool moveToJointsService( ig_active_reconstruction_msgs::ybMoveToJoints::Request& req, ig_active_reconstruction_msgs::ybMoveToJoints::Response& res );
 
     bool moveArmUsingJoints( std::map<std::string, double> joints_map );
+
     
   protected:
     ros::NodeHandle nh_;
     //std::map<std::string, double> joints_map_;
     std::map<std::string, std::map<std::string, double>> joints_map_;
+    std::map<std::string, geometry_msgs::Pose> poses_map_;
 
     ros::ServiceServer robot_moving_service_;
     ros::ServiceServer robot_moving_to_joints_service_;

@@ -39,6 +39,21 @@ void move_arm_using_pose()
   sleep(1.0); //wait for stop command*/
 }
 
+void print_poses_space( std::map<std::string, geometry_msgs::Pose> poses_map )
+{
+  for ( auto view_ : poses_map )
+  {
+    std::cout<<view_.first<<" = "<<view_.second.position.x<<" "<<
+                                   view_.second.position.y<<" "<<
+                                   view_.second.position.z<<" "<<
+                                   view_.second.orientation.x<<" "<<
+                                   view_.second.orientation.y<<" "<<
+                                   view_.second.orientation.z<<" "<<
+                                   view_.second.orientation.w<<" "<<"\n";
+  }
+}
+
+
 int main(int argc, char **argv)
 {
   ros::init(argc, argv, "yb_moveit_commander");
@@ -52,37 +67,26 @@ int main(int argc, char **argv)
   //ros::ServiceClient yb_ros_client_ = nh.serviceClient<ig_active_reconstruction_msgs::yb_move_arm_using_joints>("youbot/move_to");
   //ig_active_reconstruction_msgs::yb_move_arm_using_joints srv_;
 
-
   //Load file from param
-  std::string yb_viewspace_file_path;
-  ros_tools::getExpParam(yb_viewspace_file_path,"yb_viewspace_file_path");
+  std::string yb_joints_space_file_path;
+  std::string yb_poses_space_file_path;
+  ros_tools::getExpParam(yb_joints_space_file_path,"yb_joints_space_file_path");
+  ros_tools::getExpParam(yb_poses_space_file_path,"yb_poses_space_file_path");
 
   // generate view space using joints
   namespace iar_yb = ig_active_reconstruction_youbot;
   iar_yb::views::ViewSpace view_space;
 
-  view_space.get_joints_space( yb_viewspace_file_path );
+  view_space.set_joints_space( yb_joints_space_file_path );
 
-  ig_active_reconstruction_youbot::robot::RosServerYoubot yb_comm_unit(nh, view_space.get_joints_map());
-  moveit::planning_interface::MoveGroup group("arm_1");
+  view_space.set_poses_space( yb_poses_space_file_path );
 
-  //std::cout<<view_space.get_joints_map().at("0");
-/*  for ( auto view_ : view_space.get_joints_map().at("0"))
-  {()
-      std::cout<<view_.first<<" = "<<view_.second<<"\n";
-  }*/
+  ig_active_reconstruction_youbot::robot::RosServerYoubot yb_comm_unit( nh, view_space.get_joints_map(), view_space.get_poses_map() );
 
-  // print generated view space to make sure
-/*  for( auto id : view_space.get_joints_map() )
-  {
-    std::cout<<"Id: "<<id.first<<"\n";
-    for ( auto view_ : id.second)
-    {
-      std::cout<<view_.first<<" = "<<view_.second<<"\n";
-    }
+  //std::map<std::string, geometry_msgs::Pose> poses_map = view_space.get_poses_map();
+  
+  //print_poses_space(poses_map);    
 
-  }
-  */
   ros::spin();
 
 }
