@@ -40,21 +40,21 @@ int main(int argc, char **argv)
   ros_tools::getExpParam(sensor_in_topic,"sensor_in_topic");
   ros_tools::getExpParam(sensor_out_name,"sensor_out_name");
   
-  std::string yb_model_name, yb_eef_frame_name, yb_world_frame_name; 
+  std::string yb_model_name, yb_cam3d_frame_name, yb_world_frame_name; 
   ros_tools::getExpParam(yb_model_name,"yb_model_name");
-  ros_tools::getExpParam(yb_eef_frame_name,"yb_eef_frame_name");
+  ros_tools::getExpParam(yb_cam3d_frame_name,"yb_cam3d_frame_name");
   ros_tools::getExpParam(yb_world_frame_name,"yb_world_frame_name");
 
   using namespace ig_youbot_ros_implementation;
   
   // Controller
   //------------------------------------------------------------------
-  std::shared_ptr<Controller> controller = std::make_shared<Controller>(model_name, yb_model_name); //tell controller the model_name or yb_model_name
+  std::shared_ptr<Controller> controller = std::make_shared<Controller>(model_name, yb_model_name, yb_cam3d_frame_name, yb_world_frame_name); //tell controller the model_name or yb_model_name
   //std::shared_ptr<ybController> yb_controller = std::make_shared<ybController>(yb_model_name);
   
   // publish tf
-  controller->startTfPublisher(camera_frame_name,world_frame_name);
-  //controller->ybStartTfPublisher(yb_eef_frame_name, yb_world_frame_name);
+  controller->startTfPublisher(yb_cam3d_frame_name, yb_world_frame_name);
+  //controller->ybStartTfPublisher(yb_cam3d_frame_name, yb_world_frame_name);
   //yb_controller->startTfPublisher(yb_eef_frame_name,yb_world_frame_name);
   
   // Iar communication interface

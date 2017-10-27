@@ -22,6 +22,7 @@
 #include <mutex>
 #include <movements/core>
 #include <tf/transform_broadcaster.h>
+#include <tf/transform_listener.h>
 
 namespace ig_youbot_ros_implementation
 {
@@ -35,7 +36,8 @@ namespace ig_youbot_ros_implementation
     /*! Constructor.
      * @param cam_model_name Name of the spawned model in gazebo. Used to identify it.
      */
-    Controller(std::string cam_model_name, std::string yb_model_name);
+    Controller(std::string cam_model_name, std::string yb_model_name,
+               std::string yb_cam3d_frame_name, std::string yb_world_frame_name);
     
     /*! Stops the thread on destruction.*/
     virtual ~Controller();
@@ -55,7 +57,7 @@ namespace ig_youbot_ros_implementation
      * @param camera_frame_name Name of the camera coordinate frame to be published.
      * @param world_frame_name Name of the world coordinate frame to be published.
      */
-    virtual void startTfPublisher(std::string camera_frame_name, std::string world_frame_name);
+    virtual void startTfPublisher(std::string yb_cam3d_frame_name, std::string yb_world_frame_name);
     
     /*! Stops publishing tf information. Returns immediately, while the publishing loop only stops at its exit point.
      */
@@ -64,11 +66,14 @@ namespace ig_youbot_ros_implementation
   protected:
     /*! Tf publishing thread.
      */
-    virtual void keepPublishing(std::string camera_frame_name, std::string world_frame_name);
+    virtual void keepPublishing(std::string yb_cam3d_frame_name, std::string yb_world_frame_name);
     
   private:
     std::string cam_model_name_;
     std::string yb_model_name_;
+
+    std::string yb_cam3d_frame_name_;
+    std::string yb_world_frame_name_;
     bool has_moved_;
     
     bool keepPublishing_; //! Thread runs as long as this is true

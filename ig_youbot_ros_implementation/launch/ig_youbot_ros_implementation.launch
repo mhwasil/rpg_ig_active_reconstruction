@@ -10,7 +10,7 @@
 
 
     <param name="yb_model_name" value="youbot" />
-    <param name="yb_eef_frame_name" value="arm_link_5" />
+    <param name="yb_cam3d_frame_name" value="arm_cam3d_depth_frame" />
     <param name="yb_world_frame_name" value="odom" />
     
   </node>

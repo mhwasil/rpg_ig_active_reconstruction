@@ -27,9 +27,11 @@
 namespace ig_youbot_ros_implementation
 {
   
-  Controller::Controller(std::string cam_model_name, std::string yb_model_name )
+  Controller::Controller(std::string cam_model_name, std::string yb_model_name, std::string yb_cam3d_frame_name, std::string yb_world_frame_name )
   : cam_model_name_(cam_model_name)
   , yb_model_name_(yb_model_name)
+  , yb_cam3d_frame_name_(yb_cam3d_frame_name)
+  , yb_world_frame_name_(yb_world_frame_name)
   , has_moved_(false)
   , keepPublishing_(false)
   , cam_to_image_(0.5,0.5,-0.5,0.5)
@@ -46,22 +48,6 @@ namespace ig_youbot_ros_implementation
   
   bool Controller::moveTo( movements::Pose new_pose )
   {
-    {
-      std::lock_guard<std::mutex> guard(protector_);
-      has_moved_ = true;
-      current_pose_ = new_pose;
-    }
-    
-    gazebo_msgs::SetModelState srv_call;
-    srv_call.request.model_state.model_name = cam_model_name_;
-    
-    new_pose.orientation =  new_pose.orientation*cam_to_image_;
-    srv_call.request.model_state.pose = movements::toROS( new_pose );
-    
-
-
-    bool response = ros::service::call( "/gazebo/set_model_state", srv_call );
-
     // call youbot service
     geometry_msgs::Pose pose;
     pose = movements::toROS( new_pose );
@@ -72,46 +58,65 @@ namespace ig_youbot_ros_implementation
 
     bool success = false;
 
-    if (srv_call.response.success && yb_srv.response.success)
+    if (yb_srv.response.success)
     {
-      success = true;
-      ROS_INFO("BOTH CAMERA AND YOUBOT MOVEMENT EXECUTED");
+      ROS_INFO("YOUBOT MOVEMENT EXECUTED");
     } 
     else
     {
-      if(!srv_call.response.success) { ROS_INFO("CAMERA MOVEMENT FAILED"); }
-      if(!yb_srv.response.success) { ROS_INFO("YOUBOT MOVEMENT FAILED"); }
-      if(!srv_call.response.success && !yb_srv.response.success) { ROS_INFO("BOTH MOVEMENT FAILED"); }
-      
+      ROS_INFO("YOUBOT MOVEMENT FAILED");
     }  
 
     //return srv_call.response.success;
-    return success;
+    return yb_srv.response.success;
     
   }
   
   movements::Pose Controller::currentPose()
   {
-    gazebo_msgs::GetModelState current_state;
-    current_state.request.model_name = cam_model_name_;
-    
-    bool response = ros::service::call( "/gazebo/get_model_state", current_state );
-    
-    if(!response)
-      throw std::runtime_error("flying_gazebo_stereo_cam::Controller::currentPose:: Couldn't get camera pose.");
-    
-    movements::Pose current_pose_model = movements::fromROS(current_state.response.pose);
-    
-    
-    current_pose_model.orientation = current_pose_model.orientation*(cam_to_image_.inverse());
-    
-    return current_pose_model;
+
+    tf::TransformListener tf_listener;
+    bool tf_received = false;
+    tf::StampedTransform transform;
+    while(!tf_received)
+    {
+      try
+      {
+        ros::Time now = ros::Time(0);
+        tf_listener.waitForTransform(yb_cam3d_frame_name_, yb_world_frame_name_, now, ros::Duration(3.0));
+        tf_listener.lookupTransform(yb_cam3d_frame_name_, yb_world_frame_name_, now, transform);
+        std::cout<<"\nTRANSFORM RESULT \n";
+        std::cout<<"x: "<<transform.getOrigin().x()<<"\n";
+        std::cout<<"y: "<<transform.getOrigin().y()<<"\n";
+        std::cout<<"z: "<<transform.getOrigin().z()<<"\n";
+        tf_received = true;
+
+      }
+      catch (tf::TransformException ex)
+      {
+        ROS_ERROR("%s", ex.what());
+        ros::Duration(1.0).sleep();
+      }
+    }
+    geometry_msgs::Pose pose;
+    //tf::poseStampedTFToMsg(transform, pose);
+    pose.position.x = transform.getOrigin().x();
+    pose.position.y = transform.getOrigin().y();
+    pose.position.z = transform.getOrigin().z();
+    pose.orientation.x = transform.getRotation().x();
+    pose.orientation.y = transform.getRotation().y();
+    pose.orientation.z = transform.getRotation().z();
+    pose.orientation.w = transform.getRotation().w();
+
+    movements::Pose current_pose = movements::fromROS(pose);
+    //return current_pose_model;
+    return current_pose;
   }
   
-  void Controller::startTfPublisher(std::string camera_frame_name, std::string world_frame_name)
+  void Controller::startTfPublisher(std::string yb_cam3d_frame_name, std::string yb_world_frame_name)
   {
     keepPublishing_ = true;
-    publisher_ = std::thread(&Controller::keepPublishing,this,camera_frame_name,world_frame_name);
+    publisher_ = std::thread(&Controller::keepPublishing,this,yb_cam3d_frame_name,yb_world_frame_name);
   }
   
   void Controller::stopTfPublisher()
@@ -119,7 +124,7 @@ namespace ig_youbot_ros_implementation
     keepPublishing_=false;
   }
   
-  void Controller::keepPublishing(std::string camera_frame_name, std::string world_frame_name)
+  void Controller::keepPublishing(std::string yb_cam3d_frame_name, std::string yb_world_frame_name)
   {
     while(keepPublishing_)
     {
@@ -141,7 +146,7 @@ namespace ig_youbot_ros_implementation
   	 
         tf::Transform cam_2_origin;
         tf::transformMsgToTF( pose_t, cam_2_origin );
-        tf_broadcaster_.sendTransform(tf::StampedTransform(cam_2_origin, ros::Time::now(), world_frame_name, camera_frame_name));
+        tf_broadcaster_.sendTransform(tf::StampedTransform(cam_2_origin, ros::Time::now(), yb_cam3d_frame_name, yb_world_frame_name));
       }
       ros::Duration(0.05).sleep();
     }
