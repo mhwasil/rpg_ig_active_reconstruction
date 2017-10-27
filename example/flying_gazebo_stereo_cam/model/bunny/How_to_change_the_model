@@ -1,0 +1,4 @@
+1. Open the model.sdf and replace the file name on this line
+    <mesh><uri>model://bunny/meshes/tea-maker.dae</uri></mesh>
+2. Go back to prev parent folder, open world.sdf and change the file name
+    <uri>model://bunny/meshes/tea-cup.dae</uri>

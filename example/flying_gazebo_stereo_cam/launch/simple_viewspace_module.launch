@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<launch>
+  <node pkg="ig_active_reconstruction_ros" type="simple_viewspace_module" name="flying_gazebo_stereo_cam_viewspace_module" clear_params="true" output="screen">
+    
+    <param name="viewspace_file_path" value="$(find flying_gazebo_stereo_cam)/config/dome_6_views.txt" />
+      <origin xyz="-0.014 -0.0125 0.026" rpy="0 0 0" />
+
+  </node>
+</launch>
