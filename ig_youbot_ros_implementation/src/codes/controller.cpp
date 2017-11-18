@@ -83,12 +83,12 @@ namespace ig_youbot_ros_implementation
       try
       {
         ros::Time now = ros::Time(0);
-        tf_listener.waitForTransform(yb_cam3d_frame_name_, yb_world_frame_name_, now, ros::Duration(3.0));
+        tf_listener.waitForTransform(yb_cam3d_frame_name_, yb_world_frame_name_, now, ros::Duration(1.0));
         tf_listener.lookupTransform(yb_cam3d_frame_name_, yb_world_frame_name_, now, transform);
-        std::cout<<"\nTRANSFORM RESULT \n";
-        std::cout<<"x: "<<transform.getOrigin().x()<<"\n";
-        std::cout<<"y: "<<transform.getOrigin().y()<<"\n";
-        std::cout<<"z: "<<transform.getOrigin().z()<<"\n";
+        //std::cout<<"\nTRANSFORM RESULT \n";
+        //std::cout<<"x: "<<transform.getOrigin().x()<<"\n";
+        //std::cout<<"y: "<<transform.getOrigin().y()<<"\n";
+        //std::cout<<"z: "<<transform.getOrigin().z()<<"\n";
         tf_received = true;
 
       }

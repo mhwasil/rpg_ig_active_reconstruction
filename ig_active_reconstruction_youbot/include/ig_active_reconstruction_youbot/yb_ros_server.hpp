@@ -25,6 +25,8 @@
 #include "ig_active_reconstruction_youbot/yb_view_space.hpp"
 #include "ig_active_reconstruction_msgs/youbotMoveToOrder.h"
 #include "geometry_msgs/PoseStamped.h"
+#include "moveit/robot_model/robot_model.h"
+#include "moveit/rdf_loader/rdf_loader.h"
 
 namespace ig_active_reconstruction_youbot
 {

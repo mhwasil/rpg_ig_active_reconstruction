@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <launch>
-  <node pkg="ig_active_reconstruction_ros" type="simple_viewspace_module" name="youbot_viewspace_module" clear_params="true" output="screen">
+  <node pkg="ig_active_reconstruction_ros" type="simple_viewspace_module" name="simple_viewspace_module" clear_params="true" output="screen">
     
-    <param name="viewspace_file_path" value="$(find ig_youbot_ros_implementation)/config/dome_6_views.txt" />
-      <origin xyz="-0.014 -0.0125 0.026" rpy="0 0 0" />
+    <param name="viewspace_file_path" value="$(find ig_youbot_ros_implementation)/config/yb_6_views_poses.txt" />
+      <origin xyz="0 0 0" rpy="0 0 0" />
 
   </node>
 </launch>

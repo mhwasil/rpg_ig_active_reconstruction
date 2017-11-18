@@ -27,6 +27,9 @@
 #include <fstream>
 #include <stdexcept>
 #include "geometry_msgs/PoseStamped.h"
+#include "moveit/robot_model/robot_model.h"
+#include "moveit/rdf_loader/rdf_loader.h"
+
 //#include "ig_active_reconstruction_ros/robot_ros_server_ci.hpp"
 //#include "ig_active_reconstruction_ros/robot_conversions.hpp"
 //#include "ig_active_reconstruction_ros/views_conversions.hpp"
@@ -99,6 +102,7 @@ namespace robot
 
   bool RosServerYoubot::moveArmUsingJoints( std::map<std::string, double> joints_map )
   {
+    robot_state::RobotStatePtr current_state;
 
     moveit::planning_interface::MoveGroup group("arm_1");
     ros::AsyncSpinner spinner(1);
@@ -122,6 +126,9 @@ namespace robot
     //non blocking request
     group.asyncExecute(plan); 
     
+    //set currentState to StartState
+    group.setStartStateToCurrentState();
+
     // cancel motion after some times
     sleep(0.1);
     group.stop();
