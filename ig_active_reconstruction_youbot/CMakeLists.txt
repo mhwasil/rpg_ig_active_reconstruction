@@ -90,5 +90,17 @@ add_dependencies(yb_moveit_commander
 )
 
 
+add_executable(yb_joints_to_pose_converter
+  src/nodes/yb_joints_to_pose_converter.cpp
+  ${${PROJECT_NAME}_CODE_BASE}
+)
+
+target_link_libraries(yb_joints_to_pose_converter
+   ${catkin_LIBRARIES}
+   ${Boost_LIBRARIES}
+)
+add_dependencies(yb_joints_to_pose_converter
+ ${catkin_EXPORTED_TARGETS}
+)
 
 

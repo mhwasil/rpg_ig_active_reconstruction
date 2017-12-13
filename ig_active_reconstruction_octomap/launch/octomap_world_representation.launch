@@ -11,15 +11,17 @@
     <param name="clamping_threshold_max" value="0.97" />
     
     <!-- PCL input configuration -->
-    <param name="world_frame_name" value="odom" /> <!-- original in simulation "world" change to base_link in real-->
+    <param name="world_frame_name" value="map" /> <!-- original in simulation "world" change to base_link in real-->
+   
+    <!--Bounding box works as the limit of how much points we want to cover-->
     <param name="use_bounding_box" value="true" />
-    <param name="bounding_box_min_point_m/x" value="-0.6" />
-    <param name="bounding_box_min_point_m/y" value="-0.6" />
+    <param name="bounding_box_min_point_m/x" value="-1.6" />
+    <param name="bounding_box_min_point_m/y" value="-0.8" />
     <param name="bounding_box_min_point_m/z" value="-0.01" />
-    <param name="bounding_box_max_point_m/x" value="0.6" />
-    <param name="bounding_box_max_point_m/y" value="0.6" />
-    <param name="bounding_box_max_point_m/z" value="0.6" />
-    <param name="max_sensor_range_m" value="1.5" />
+    <param name="bounding_box_max_point_m/x" value="1.0" />
+    <param name="bounding_box_max_point_m/y" value="2.6" />
+    <param name="bounding_box_max_point_m/z" value="0.08" />
+    <param name="max_sensor_range_m" value="1.5" /> <!--default 1.5-->
     
     <!-- Occlusion calculation configuration -->
     <param name="occlusion_update_dist_m" value="0.3" />
@@ -27,11 +29,11 @@
     <!-- Raycaster configuration -->
     <param name="img_width_px" value="640" />
     <param name="img_height_px" value="480" />
-    <param name="camera/fx" value="448.1008985853343" />
-    <param name="camera/fy" value="448.1008985853343" />
-    <param name="camera/cx" value="376.5" />
-    <param name="camera/cy" value="240.5" />
-    <param name="max_ray_depth_m" value="1.5" />
+    <param name="camera/fx" value="463.888885" />
+    <param name="camera/fy" value="463.888885" />
+    <param name="camera/cx" value="313.631" />
+    <param name="camera/cy" value="240.362" />
+    <param name="max_ray_depth_m" value="1.5" /> <!--default 1.5-->
     
     <param name="raycasting/resolution_x" value="0.1" />
     <param name="raycasting/resolution_y" value="0.1" />
