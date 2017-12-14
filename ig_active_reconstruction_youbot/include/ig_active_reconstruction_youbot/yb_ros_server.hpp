@@ -27,6 +27,11 @@
 #include "geometry_msgs/PoseStamped.h"
 #include "moveit/robot_model/robot_model.h"
 #include "moveit/rdf_loader/rdf_loader.h"
+#include <actionlib/client/simple_action_client.h>
+#include <actionlib/client/terminal_state.h>
+#include "mir_yb_action_msgs/MoveBaseSafeAction.h"
+#include "mir_yb_action_msgs/MoveBaseSafeGoal.h"
+#include "ig_active_reconstruction_msgs/StringMsgs.h"
 
 namespace ig_active_reconstruction_youbot
 {
@@ -46,8 +51,8 @@ namespace robot
      * @param nh ROS node handle defines the namespace in which ROS communication will be carried out.
      * @param linked_interface (optional) directly add the interface that is linked internally (to which requests are forwarded.
      */
-    RosServerYoubot( ros::NodeHandle nh, std::map<std::string,std::map<std::string, double> > joints_map,
-                       std::map<std::string, geometry_msgs::Pose> poses_map );
+    RosServerYoubot( ros::NodeHandle nh, std::map<int,std::map<std::string, double> > joints_map,
+                       std::map<int, geometry_msgs::Pose> poses_map, std::map<int, std::string> workstations_map, std::string start_ws );
 
     std::map<std::string, double> get_joints_map();
 
@@ -61,7 +66,7 @@ namespace robot
     bool moveToService( ig_active_reconstruction_msgs::youbotMoveToOrder::Request& req, 
                                     ig_active_reconstruction_msgs::youbotMoveToOrder::Response& res );
     //return joints cnfiguration
-    std::string poseToJoints( geometry_msgs::Pose pose );
+    int poseToJoints( geometry_msgs::Pose pose );
 
      //execute joint using moveit
     bool executeJoints( std::map<std::string, double> joints );
@@ -70,12 +75,16 @@ namespace robot
 
     bool moveArmUsingJoints( std::map<std::string, double> joints_map );
 
+    bool move_base_safe( std::string start, std::string end);
+
     
   protected:
     ros::NodeHandle nh_;
     //std::map<std::string, double> joints_map_;
-    std::map<std::string, std::map<std::string, double>> joints_map_;
-    std::map<std::string, geometry_msgs::Pose> poses_map_;
+    std::map<int, std::map<std::string, double>> joints_map_;
+    std::map<int, geometry_msgs::Pose> poses_map_;
+    std::map<int, std::string> workstations_map_;
+    std::string old_ws_;
 
     ros::ServiceServer robot_moving_service_;
     ros::ServiceServer robot_moving_to_joints_service_;

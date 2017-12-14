@@ -38,8 +38,8 @@ namespace views
       success = success && ( in>>joint_3 );
       success = success && ( in>>joint_4 );
 
-      std::string id = std::to_string(id_);
-      ViewSpace::set_joints_map(joint_0, joint_1, joint_2, joint_3, joint_4, id);
+      //std::string id = std::to_string(id_);
+      ViewSpace::set_joints_map(joint_0, joint_1, joint_2, joint_3, joint_4, id_);
       id_ += 2;
     }
   }
@@ -63,13 +63,31 @@ namespace views
       success = success && ( in>>pose.orientation.z );
       success = success && ( in>>pose.orientation.w );
 
-      std::string id = std::to_string(id_);
-      ViewSpace::set_poses_map( pose, id );
+      //std::string id = std::to_string(id_);
+      ViewSpace::set_poses_map( pose, id_ );
       id_ += 2;
     }
   }
 
-  void ViewSpace::set_joints_map( double joint_0, double joint_1, double joint_2, double joint_3, double joint_4 , std::string id)
+  void ViewSpace::set_workstations(std::string yb_workstations_file_path)
+  {
+    std::ifstream in(yb_workstations_file_path, std::ifstream::in);
+    unsigned int nr_of_views;
+    bool success = static_cast<bool>(in >> nr_of_views);
+
+    std::string ws;
+
+    int id_ = 0;
+    for (unsigned int i = 0; i < nr_of_views; ++i)
+    {
+      success = success && (in >> ws);
+      //std::string id = std::to_string(id_);
+      ViewSpace::set_workstations_map(id_, ws);
+      id_ += 2;
+    }
+  }
+
+  void ViewSpace::set_joints_map( double joint_0, double joint_1, double joint_2, double joint_3, double joint_4 , int id)
   {
     std::map<std::string, double> wrapper;
     wrapper["arm_joint_1"] = joint_0;
@@ -77,30 +95,34 @@ namespace views
     wrapper["arm_joint_3"] = joint_2;
     wrapper["arm_joint_4"] = joint_3;
     wrapper["arm_joint_5"] = joint_4;
-    joints_map_.insert(std::pair<std::string, std::map<std::string, double>>(id,wrapper));
-    //joints_map_[id] = wrapper;
+    //joints_map_.insert(std::pair<std::string, std::map<std::string, double>>(id,wrapper));
+    joints_map_[id] = wrapper;
   }
 
-  void ViewSpace::set_poses_map( geometry_msgs::Pose& pose, std::string id )
+  void ViewSpace::set_poses_map( geometry_msgs::Pose& pose, int id )
   {
-    poses_map_.insert(std::pair<std::string, geometry_msgs::Pose>(id, pose));
+    ///poses_map_.insert(std::pair<int, geometry_msgs::Pose>(id, pose));
+    poses_map_[id] = pose;
   }
 
-  std::map<std::string, std::map<std::string, double> > ViewSpace::get_joints_map()
+  void ViewSpace::set_workstations_map(int id, std::string ws)
+  {
+    workstations_map_[id] = ws;
+  }
+
+  std::map<int, std::map<std::string, double> > ViewSpace::get_joints_map()
   {
     return joints_map_;
   }
 
-  std::map<std::string, geometry_msgs::Pose > ViewSpace::get_poses_map()
+  std::map<int, geometry_msgs::Pose > ViewSpace::get_poses_map()
   {
     return poses_map_;
   }
 
-  
-  bool moveToJointsService( ig_active_reconstruction_msgs::youbotMoveToOrder::Request& req, 
-                                    ig_active_reconstruction_msgs::youbotMoveToOrder::Response& res )
+  std::map<int, std::string> ViewSpace::get_workstations_map()
   {
-    
+    return workstations_map_;
   }
 
 }

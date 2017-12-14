@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<launch>
+    <arg name="start_ws" default="START"/>
+    <arg name="end_ws"/>
+    <node pkg="ig_active_reconstruction_youbot" type="yb_move_base_safe" name="yb_move_base_safe" clear_params="true" output="screen">
+        <param name="start_ws" value="$(arg start_ws)" />
+        <param name="end_ws" value="$(arg end_ws)" />
+    </node>
+</launch>
+

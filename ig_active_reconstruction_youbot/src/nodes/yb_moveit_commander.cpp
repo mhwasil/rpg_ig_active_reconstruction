@@ -39,7 +39,7 @@ void move_arm_using_pose()
   sleep(1.0); //wait for stop command*/
 }
 
-void print_poses_space( std::map<std::string, geometry_msgs::Pose> poses_map )
+void print_poses_space( std::map<int, geometry_msgs::Pose> poses_map )
 {
   for ( auto view_ : poses_map )
   {
@@ -53,6 +53,26 @@ void print_poses_space( std::map<std::string, geometry_msgs::Pose> poses_map )
   }
 }
 
+void print_joints_space(std::map<int, std::map<std::string, double>> joints_map)
+{
+  for (auto map_ : joints_map)
+  {
+    std::cout << map_.first << " = ";
+    for (auto joints_ : map_.second)
+    {
+      std::cout << joints_.second << " ";
+    }
+    std::cout << "\n";
+  }
+}
+
+void print_workstations( std::map<int, std::string> workstations_map)
+{
+  for (auto map_ : workstations_map)
+  {
+    std::cout<<map_.first<<" = " << map_.second<<"\n";
+  }
+}
 
 int main(int argc, char **argv)
 {
@@ -70,9 +90,12 @@ int main(int argc, char **argv)
   //Load file from param
   std::string yb_joints_space_file_path;
   std::string yb_poses_space_file_path;
+  std::string yb_workstations_file_path;
+  std::string start_ws;
   ros_tools::getExpParam(yb_joints_space_file_path,"yb_joints_space_file_path");
   ros_tools::getExpParam(yb_poses_space_file_path,"yb_poses_space_file_path");
-
+  ros_tools::getExpParam(yb_workstations_file_path, "yb_workstations_file_path");
+  ros_tools::getExpParam(start_ws, "start_ws");
   // generate view space using joints
   namespace iar_yb = ig_active_reconstruction_youbot;
   iar_yb::views::ViewSpace view_space;
@@ -81,12 +104,30 @@ int main(int argc, char **argv)
 
   view_space.set_poses_space( yb_poses_space_file_path );
 
-  ig_active_reconstruction_youbot::robot::RosServerYoubot yb_comm_unit( nh, view_space.get_joints_map(), view_space.get_poses_map() );
+  view_space.set_workstations( yb_workstations_file_path );
 
-  //std::map<std::string, geometry_msgs::Pose> poses_map = view_space.get_poses_map();
+  ig_active_reconstruction_youbot::robot::RosServerYoubot yb_comm_unit( nh, view_space.get_joints_map(), 
+                                                                            view_space.get_poses_map(), 
+                                                                            view_space.get_workstations_map(),
+                                                                            start_ws );
+
+  std::map<int, geometry_msgs::Pose> poses_map = view_space.get_poses_map();
   
-  //print_poses_space(poses_map);    
+  print_poses_space(poses_map);
+
+  std::map<int, std::map<std::string, double>> joints_map = view_space.get_joints_map();
+
+  print_joints_space(joints_map);
+
+  std::map<int, std::string> workstations_map = view_space.get_workstations_map();
+
+  print_workstations(workstations_map);
+  //  std::map<std::string, double> joints = joints_map.at(0);
+  //  for (auto joints_ : joints)
+  //  {
+  //    std::cout << joints_.second << " ";
+  //  }
+  //  std::cout << "\n";
 
   ros::spin();
-
 }

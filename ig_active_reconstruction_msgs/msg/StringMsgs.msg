@@ -1,0 +1,4 @@
+string arm_safe_position
+string source
+string destination
+bool result

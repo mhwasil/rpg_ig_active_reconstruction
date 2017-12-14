@@ -19,6 +19,7 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   moveit_ros_planning_interface
   message_generation
+  mir_yb_action_msgs
 )
 
 find_package(Eigen REQUIRED)
@@ -37,6 +38,7 @@ catkin_package(
     movements
     geometry_msgs
     sensor_msgs
+    mir_yb_action_msgs
   DEPENDS
     Eigen
     Boost
@@ -100,6 +102,19 @@ target_link_libraries(yb_joints_to_pose_converter
    ${Boost_LIBRARIES}
 )
 add_dependencies(yb_joints_to_pose_converter
+ ${catkin_EXPORTED_TARGETS}
+)
+
+add_executable(yb_move_base_safe
+  src/nodes/yb_move_base_safe.cpp
+  ${${PROJECT_NAME}_CODE_BASE}
+)
+
+target_link_libraries(yb_move_base_safe
+   ${catkin_LIBRARIES}
+   ${Boost_LIBRARIES}
+)
+add_dependencies(yb_move_base_safe
  ${catkin_EXPORTED_TARGETS}
 )
 

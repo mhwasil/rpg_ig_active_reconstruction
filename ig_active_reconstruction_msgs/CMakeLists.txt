@@ -17,6 +17,7 @@ add_message_files(
   SubWindow.msg
   ViewMsg.msg
   ViewSpaceMsg.msg
+  StringMsgs.msg
 )
 
 add_service_files(

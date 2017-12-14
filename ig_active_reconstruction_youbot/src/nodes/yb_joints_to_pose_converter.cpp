@@ -68,7 +68,7 @@ void print_poses_space(std::map<int, movements::Pose> poses_map)
   }
 }
 
-void print_joints_space(std::map<std::string, std::map<std::string, double>> joints_map)
+void print_joints_space(std::map<int, std::map<std::string, double>> joints_map)
 {
   for (auto map_ : joints_map)
   {
@@ -179,7 +179,7 @@ int main(int argc, char **argv)
 
   //print_poses_space(poses_map);
 
-  std::map<std::string, std::map<std::string, double>> joints_map = view_space.get_joints_map();
+  std::map<int, std::map<std::string, double>> joints_map = view_space.get_joints_map();
   std::map<int, movements::Pose> poses_map_;
   float sleep_duration = 2.0;
   print_joints_space(joints_map);
@@ -188,7 +188,8 @@ int main(int argc, char **argv)
     std::map<std::string, double> wrapper;
     //std::string key = map_.first;
     //std::cout << "Int "<<atoi(key.c_str())<<"\n";
-    int key = std::atoi(map_.first.c_str());
+    //int key = std::atoi(map_.first.c_str());
+    int key = map_.first;
     std::cout<<"\nInt key: "<<key<<"\n";
     wrapper = map_.second;
     bool success = moveArmUsingJoints(wrapper);
