@@ -78,8 +78,10 @@ namespace robot
       //nav_movement_fb = nav_movement(old_ws_, new_ws_)
       bool nav_result = RosServerYoubot::move_base_safe(old_ws_, new_ws);
       
-      res.success = nav_result;
-      if (res.success) {
+      //res.success = nav_result;
+      if (nav_result) {
+        bool success = RosServerYoubot::moveArmUsingJoints(joints_map_.at(id));
+        res.success = success;
         old_ws_ = new_ws;
       } else {
         //keep old_ws and still return true in the ws
