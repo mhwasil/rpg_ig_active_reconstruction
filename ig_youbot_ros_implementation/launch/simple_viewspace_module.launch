@@ -2,7 +2,7 @@
 <launch>
   <node pkg="ig_active_reconstruction_ros" type="simple_viewspace_module" name="simple_viewspace_module" clear_params="true" output="screen">
     
-    <param name="viewspace_file_path" value="$(find ig_active_reconstruction_youbot)/config/yb_6_views_poses.txt" />
+    <param name="viewspace_file_path" value="$(find ig_active_reconstruction_youbot)/config/yb_24_views_poses.txt" />
       <origin xyz="0 0 0" rpy="0 0 0" />
 
   </node>
