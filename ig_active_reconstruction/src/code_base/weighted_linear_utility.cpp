@@ -19,6 +19,7 @@
 
 #include <thread>
 #include <iostream>
+#include <stdexcept>
 
 namespace ig_active_reconstruction
 {
@@ -57,7 +58,8 @@ namespace ig_active_reconstruction
     robot_comm_unit_ = robot_comm_unit;
   }
   
-  views::View::IdType WeightedLinearUtility::getNbv( views::ViewSpace::IdSet& id_set, boost::shared_ptr<views::ViewSpace> viewspace )
+  views::View::IdType WeightedLinearUtility::getNbv( views::ViewSpace::IdSet& id_set, boost::shared_ptr<views::ViewSpace> viewspace, 
+                                                     std::map<int, std::string> workstations_map, bool workstation_constraint )
   {
     // structure to store received values
     std::vector<double> cost_vector;
@@ -145,18 +147,117 @@ namespace ig_active_reconstruction
     else
       cost_factor = cost_weight_/total_cost;
     
+    //create a utility view maps
+    std::map<unsigned int, double> cost_map;
     for( unsigned int i=0; i<id_set.size(); ++i )
     {
       double utility = ig_vector[i]/total_ig - cost_factor*cost_vector[i];
       std::cout<<"\nutility of view "<<id_set[i]<<": "<<utility;
+      cost_map[id_set[i]] = utility;
       if( utility>best_util )
       {
         best_util = utility;
         nbv = id_set[i];
       }
     }
+
     //std::cout<<"\nChoosing view "<<nbv<<".";
-    return nbv;
+    
+    //......
+    //Store all utilities for each view in a map
+    //std::map<unsigned int, std::string> valid_views_ws;
+    std::map<std::string, std::vector<int> > ws_combined;
+    
+    for( unsigned int i=0; i<id_set.size(); ++i )
+    {
+      if (workstations_map.count(i) == true)
+      {
+        std::string new_ws = workstations_map.at(i);
+        if (ws_combined.count(new_ws) == true)
+        {
+          std::vector<int> old_items = ws_combined.at(new_ws);
+          old_items.push_back(i);
+          ws_combined.erase(new_ws);
+          ws_combined[new_ws] = old_items;
+        }
+        else
+        {
+          std::vector<int> temp;
+          temp.push_back(i);
+          ws_combined[new_ws] = temp;
+        }
+
+      }
+    }
+
+    //......
+    //calculate utility of each view in each workstation
+    //contain a map <viewpoint, utility>
+    std::map<std::string, std::map<unsigned int, double>> utility_map;
+    unsigned int selected_best_nbv;
+    double selected_best_utility;
+    int i_ = 0;
+    for (auto ws_ : ws_combined)
+    {
+      std::string ws_key;
+      std::cout<<"Workstation: "<<ws_key;
+      ws_key = ws_.first;
+      std::vector<int> viewpoints;
+      viewpoints = ws_.second;
+      double best_utility = 0;
+      unsigned int best_nbv = 0;
+      int iter = 0;
+      for (auto view_ : viewpoints)
+      {
+        if (iter == 0)
+        {
+          best_utility = cost_map.at(view_);
+          best_nbv = view_;
+          std::cout<<best_nbv<<" = "<<best_utility;
+        } 
+        else
+        {
+          if (cost_map.at(view_) >= best_utility)
+          {
+            best_utility = cost_map.at(view_);
+            best_nbv = view_;
+            std::cout<<best_nbv<<" = "<<best_utility;
+          }
+        } 
+        iter++;
+      }
+
+      std::map<unsigned int, double> temp;
+      temp[nbv] = best_utility;
+      utility_map[ws_key] = temp;
+      if (i_ == 0)
+      {
+        selected_best_nbv = best_nbv;
+        selected_best_utility = best_utility;
+      }
+      else
+      {
+        if (best_utility > selected_best_utility)
+        {
+          selected_best_nbv = best_nbv;
+          selected_best_utility = best_utility;
+        }
+      }
+
+      i_++;
+    }
+
+    views::View::IdType final_nbv;
+    if (workstation_constraint)
+    {
+      final_nbv = selected_best_nbv;
+    }
+    else
+    {
+      final_nbv = nbv;
+    }
+
+    return final_nbv;
   }
   
   void WeightedLinearUtility::getIg(std::vector<double>& ig_vector,double& total_ig, 

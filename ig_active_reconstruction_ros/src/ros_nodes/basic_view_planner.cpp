@@ -19,6 +19,7 @@
 #include <string>
 #include <thread>
 #include <chrono>
+#include <fstream>
 
 #include <boost/thread/thread.hpp>
 #include <boost/chrono/include.hpp>
@@ -33,8 +34,30 @@
 #include "ig_active_reconstruction_ros/views_ros_client_ci.hpp"
 #include "ig_active_reconstruction_ros/world_representation_ros_client_ci.hpp"
 
+
 /*! Implements a ROS node holding a BasicViewPlanner, combined with a simple command line user interface.
  */
+
+std::map<int, std::string> set_workstations_map(std::string yb_workstations_file_path)
+{
+  std::map<int, std::string> ws_map;
+  std::ifstream in(yb_workstations_file_path, std::ifstream::in);
+  unsigned int nr_of_views;
+  bool success = static_cast<bool>(in >> nr_of_views);
+
+  std::string ws;
+
+  int id_ = 0;
+  for (unsigned int i = 0; i < nr_of_views; ++i)
+  {
+    success = success && (in >> ws);
+    //std::string id = std::to_string(id_);
+    //set_workstations_map(id_, ws);
+    ws_map[id_] = ws;
+    id_ += 2;
+  }
+}
+
 int main(int argc, char **argv)
 {
   ros::init(argc, argv, "basic_view_planner");
@@ -65,15 +88,11 @@ int main(int argc, char **argv)
   // for the termination critera
   unsigned int max_calls;
   ros_tools::getParam<unsigned int, int>( max_calls, "max_calls", 20 ); //default 20, also change in launch file
-  
-
-  
-  
+   
   
   // only the view planner resides here
   // ...................................................................................................................
   iar::BasicViewPlanner view_planner(bvp_config);
-  
   
   // robot, viewspace module and world representation are external
   // ...................................................................................................................
@@ -84,8 +103,19 @@ int main(int argc, char **argv)
   view_planner.setRobotCommUnit(robot_comm);
   view_planner.setViewsCommUnit(views_comm);
   view_planner.setWorldCommUnit(world_comm);
-  
-  
+
+  // load workstations for workstations constraints
+  // ..................................................................................................................
+  std::string yb_workstations_file_path;
+  ros_tools::getExpParam(yb_workstations_file_path, "yb_workstations_file_path");
+  //YoubotVS.set_workstations(yb_workstations_file_path);
+
+  std::map<int, std::string> ws_map = set_workstations_map(yb_workstations_file_path);
+
+
+  //Set workstations map to view_planner
+  view_planner.set_workstations_map(ws_map);
+
   // want to use the weighted linear utility calculator, which directly interacts with world and robot comms too
   // ...................................................................................................................
   boost::shared_ptr<iar::WeightedLinearUtility> utility_calculator = boost::make_shared<iar::WeightedLinearUtility>(cost_weight);

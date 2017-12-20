@@ -25,8 +25,8 @@
 #include <ros/ros.h>
 #include <std_msgs/String.h>
 #include <string> 
-//include moveit libraries
 #include "ig_active_reconstruction_msgs/ybMoveToJoints.h"
+
 
 namespace ig_active_reconstruction
 {
@@ -156,6 +156,14 @@ namespace ig_active_reconstruction
     return status_;
   }
   
+  void BasicViewPlanner::set_workstations_map(std::map<int, std::string> workstations_map)
+  {
+    if( runProcedure_ || running_procedure_.joinable() )
+      return;
+    workstations_map_ = workstations_map;
+    ROS_INFO("Workstations map is ready");
+  }
+
   bool BasicViewPlanner::isReady()
   {
     return robot_comm_unit_!=nullptr
@@ -236,15 +244,20 @@ namespace ig_active_reconstruction
         std::cout<<i.first<<", "<<i.second<<" \n";
       }
       
+      //...................
+      //set workstation constraint
+      bool workstation_constraint = true;
+
       // getting cost and ig is wrapped in the utility calculator..................
       status_ = Status::NBV_CALCULATIONS;
-      views::View::IdType nbv_id = utility_calculator_->getNbv(view_candidate_ids,viewspace_);
+      views::View::IdType nbv_id = utility_calculator_->getNbv(view_candidate_ids, viewspace_, workstations_map_, workstation_constraint);
       
       //result for next view (the next pose)
       views::View nbv = viewspace_->getView(nbv_id);
 
       std::cout<<"\n\n Next view: "<<nbv_id<<"\n";
       std::cout<<"Pose: "<<nbv.pose()<<"\n\n";
+      
 
       // check termination criteria ...............................................
       if( goal_evaluation_module_->isDone() )

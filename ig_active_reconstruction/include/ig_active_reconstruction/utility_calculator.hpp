@@ -33,7 +33,8 @@ namespace ig_active_reconstruction
      * @param id_set Id-subset of views that shall be considered.
      * @param viewspace The complete viewspace object
      */
-    virtual views::View::IdType getNbv( views::ViewSpace::IdSet& id_set, boost::shared_ptr<views::ViewSpace> viewspace )=0;    
+    virtual views::View::IdType getNbv( views::ViewSpace::IdSet& id_set, boost::shared_ptr<views::ViewSpace> viewspace, 
+                                        std::map<int, std::string> workstations_map, bool workstation_constraint )=0;    
   };
   
 }

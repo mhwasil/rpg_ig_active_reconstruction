@@ -120,6 +120,8 @@ namespace ig_active_reconstruction
       /*! Returns the current procedure status.
        */
       virtual Status status();
+
+      void set_workstations_map(std::map<int, std::string> workstations_map);
       
     protected:
       /*! Returns if the view planner is ready to rumble.
@@ -151,6 +153,7 @@ namespace ig_active_reconstruction
       bool pauseProcedure_; //! True if the procedure should pause.
       
       boost::shared_ptr<views::ViewSpace> viewspace_; //! Current viewspace.
+      std::map<int, std::string> workstations_map_; //! workstations list
       
   };
     

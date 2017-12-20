@@ -8,6 +8,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   ig_active_reconstruction_msgs
   ig_active_reconstruction
+
   movements
 )
 
@@ -19,6 +20,7 @@ catkin_package(
     roscpp
     ig_active_reconstruction_msgs
     ig_active_reconstruction
+
     movements
 )
 

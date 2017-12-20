@@ -33,7 +33,6 @@ catkin_package(
     urdf
     ig_active_reconstruction
     ig_active_reconstruction_msgs
-    ig_active_reconstruction_ros
     ig_active_reconstruction_octomap
     movements
     geometry_msgs
