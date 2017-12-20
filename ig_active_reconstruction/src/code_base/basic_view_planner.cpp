@@ -71,12 +71,14 @@ namespace ig_active_reconstruction
       status_ = Status::UNINITIALIZED;
   }
   
-  void BasicViewPlanner::setViewsCommUnit( boost::shared_ptr<views::CommunicationInterface> views_comm_unit )
+  void BasicViewPlanner::setViewsCommUnit( boost::shared_ptr<views::CommunicationInterface> views_comm_unit, std::map<int, std::string> workstations_map )
   {
     if( runProcedure_ || running_procedure_.joinable() )
       return;
     
     views_comm_unit_ = views_comm_unit;
+    
+    workstations_map_ = workstations_map;
     
     if( isReady() && status_==Status::UNINITIALIZED )
       status_ = Status::IDLE;
@@ -158,10 +160,15 @@ namespace ig_active_reconstruction
   
   void BasicViewPlanner::set_workstations_map(std::map<int, std::string> workstations_map)
   {
-    if( runProcedure_ || running_procedure_.joinable() )
-      return;
+    //if( runProcedure_ || running_procedure_.joinable() )
+    //  return;
     workstations_map_ = workstations_map;
-    ROS_INFO("Workstations map is ready");
+    //ROS_INFO("Workstations map is ready");
+ 
+    /*if( isReady() && status ==Status::UNINITIALIZED )
+        status_ = Status::IDLE;
+    else
+        status_ = Status::UNINITIALIZED;*/
   }
 
   bool BasicViewPlanner::isReady()
