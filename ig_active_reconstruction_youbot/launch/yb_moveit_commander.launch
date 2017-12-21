@@ -6,4 +6,6 @@
 		<param name="yb_workstations_file_path" value="$(find ig_active_reconstruction_youbot)/config/yb_24_views_workstations.txt" />
 		<param name="start_ws" value="WS01" />
 	</node>
+
+    <include file="$(find ig_active_reconstruction_youbot)/launch/logging.launch"/>
 </launch>
