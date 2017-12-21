@@ -161,12 +161,89 @@ namespace ig_active_reconstruction
       }
     }
 
+    std::map<std::string, std::vector<int>> ws_combined;
+
+    for (unsigned int i = 0; i < id_set.size(); ++i)
+    {
+      if (id_set[i] >= 0 && id_set[i] < 11) {
+        std::string ws = "WS01";
+        if (ws_combined.count(ws) == true)
+        {
+          std::vector<int> old_items = ws_combined.at(ws);
+          old_items.push_back(id_set[i]);
+          ws_combined.erase(ws);
+          ws_combined[ws] = old_items;
+        }
+        else
+        {
+          std::vector<int> temp;
+          temp.push_back(id_set[i]);
+          ws_combined[ws] = temp;
+        }
+      }
+      else if (id_set[i] >= 12 && id_set[i] < 23)
+      {
+        std::string ws = "WS02";
+        if (ws_combined.count(ws) == true)
+        {
+          std::vector<int> old_items = ws_combined.at(ws);
+          old_items.push_back(id_set[i]);
+          ws_combined.erase(ws);
+          ws_combined[ws] = old_items;
+        }
+        else
+        {
+          std::vector<int> temp;
+          temp.push_back(id_set[i]);
+          ws_combined[ws] = temp;
+        }
+      }
+      else if (id_set[i] >= 24 && id_set[i] < 35)
+      {
+        std::string ws = "WS03";
+        if (ws_combined.count(ws) == true)
+        {
+          std::vector<int> old_items = ws_combined.at(ws);
+          old_items.push_back(id_set[i]);
+          ws_combined.erase(ws);
+          ws_combined[ws] = old_items;
+        }
+        else
+        {
+          std::vector<int> temp;
+          temp.push_back(id_set[i]);
+          ws_combined[ws] = temp;
+        }
+      }
+      else if (id_set[i] >= 36 && id_set[i] < 47)
+      {
+        std::string ws = "WS04";
+        if (ws_combined.count(ws) == true)
+        {
+          std::vector<int> old_items = ws_combined.at(ws);
+          old_items.push_back(id_set[i]);
+          ws_combined.erase(ws);
+          ws_combined[ws] = old_items;
+        }
+        else
+        {
+          std::vector<int> temp;
+          temp.push_back(id_set[i]);
+          ws_combined[ws] = temp;
+        }
+      }
+      else
+      {
+        std::cout<<"\nInvalid workstations \n";
+      }
+    }
+
     //std::cout<<"\nChoosing view "<<nbv<<".";
     
     //......
     //Store all utilities for each view in a map
     //std::map<unsigned int, std::string> valid_views_ws;
-    std::map<std::string, std::vector<int> > ws_combined;
+    /*std::map<std::string, std::vector<int> > ws_combined;
     
     for( unsigned int i=0; i<id_set.size(); ++i )
     {
@@ -189,19 +266,21 @@ namespace ig_active_reconstruction
 
       }
     }
-
+    */
     //......
     //calculate utility of each view in each workstation
     //contain a map <viewpoint, utility>
     std::map<std::string, std::map<unsigned int, double>> utility_map;
     unsigned int selected_best_nbv;
     double selected_best_utility;
+    std::string selected_ws;
     int i_ = 0;
+    std::cout<<"\nDetermine nbv by workstations: \n";
     for (auto ws_ : ws_combined)
     {
       std::string ws_key;
-      std::cout<<"Workstation: "<<ws_key;
       ws_key = ws_.first;
+      std::cout << "\n" << ws_key << " : ";
       std::vector<int> viewpoints;
       viewpoints = ws_.second;
       double best_utility = 0;
@@ -234,6 +313,7 @@ namespace ig_active_reconstruction
       {
         selected_best_nbv = best_nbv;
         selected_best_utility = best_utility;
+        selected_ws = ws_key;
       }
       else
       {
@@ -241,6 +321,7 @@ namespace ig_active_reconstruction
         {
           selected_best_nbv = best_nbv;
           selected_best_utility = best_utility;
+          selected_ws = ws_key;
         }
       }
 
@@ -255,9 +336,10 @@ namespace ig_active_reconstruction
     else
     {
       final_nbv = nbv;
-    }
-
+    } 
+    std::cout<<"\nSelected workstation: "<<selected_ws<<", in View: "<<final_nbv<<"\n";
     return final_nbv;
+    //return nbv;
   }
   
   void WeightedLinearUtility::getIg(std::vector<double>& ig_vector,double& total_ig, 

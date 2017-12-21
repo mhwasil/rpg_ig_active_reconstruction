@@ -50,7 +50,13 @@ namespace ig_active_reconstruction
   {
     
   }
-  
+
+  /* BasicViewPlanner::BasicViewPlanner(std::map<int, std::string> workstations_map)
+  {
+
+    workstations_map_ = workstations_map;
+  }
+ */
   BasicViewPlanner::~BasicViewPlanner()
   {
     runProcedure_ = false;
@@ -71,14 +77,12 @@ namespace ig_active_reconstruction
       status_ = Status::UNINITIALIZED;
   }
   
-  void BasicViewPlanner::setViewsCommUnit( boost::shared_ptr<views::CommunicationInterface> views_comm_unit, std::map<int, std::string> workstations_map )
+  void BasicViewPlanner::setViewsCommUnit( boost::shared_ptr<views::CommunicationInterface> views_comm_unit)
   {
     if( runProcedure_ || running_procedure_.joinable() )
       return;
     
     views_comm_unit_ = views_comm_unit;
-    
-    workstations_map_ = workstations_map;
     
     if( isReady() && status_==Status::UNINITIALIZED )
       status_ = Status::IDLE;
@@ -185,6 +189,7 @@ namespace ig_active_reconstruction
     //node handle
     ros::NodeHandle nh;
 
+    old_ws="WS01";
 
     // preparation
     goal_evaluation_module_->reset();
@@ -213,16 +218,67 @@ namespace ig_active_reconstruction
     
     unsigned int reception_nr = 0;
     unsigned int moving_nr = 0;
+    int iteration_number = 0;
     
     do
     {
       // determine view candidate subset of viewspace .....................
       views::ViewSpace::IdSet view_candidate_ids;
       viewspace_->getGoodViewSpace(view_candidate_ids, config_.discard_visited);
-      
-      if(view_candidate_ids.empty())
+      if (view_candidate_ids.empty())
       {
-	     break;
+        break;
+      }
+
+      //std::string old_ws;
+      views::ViewSpace::IdSet new_view_candidate_ids;
+      if(iteration_number == 0)
+      {
+        new_view_candidate_ids = view_candidate_ids;
+      }
+      else
+      {
+        if (old_ws == "WS01")
+        {
+          for (unsigned int i = 0; i < view_candidate_ids.size(); ++i)
+          {
+            if (view_candidate_ids[i] > 12)
+            {
+              new_view_candidate_ids.push_back(view_candidate_ids[i]);
+            }
+
+          }
+        }
+        else if (old_ws == "WS02")
+        {
+          for (unsigned int i = 0; i < view_candidate_ids.size(); ++i)
+          {
+            if (view_candidate_ids[i] < 12 || view_candidate_ids[i] >= 24)
+            {
+              new_view_candidate_ids.push_back(view_candidate_ids[i]);
+            }
+          }
+        }
+        else if (old_ws == "WS03")
+        {
+          for (unsigned int i = 0; i < view_candidate_ids.size(); ++i)
+          {
+            if (view_candidate_ids[i] < 24 || view_candidate_ids[i] >= 36)
+            {
+              new_view_candidate_ids.push_back(view_candidate_ids[i]);
+            }
+          }
+        }
+        else if (old_ws == "WS04")
+        {
+          for (unsigned int i = 0; i < view_candidate_ids.size(); ++i)
+          {
+            if (view_candidate_ids[i] < 36)
+            {
+              new_view_candidate_ids.push_back(view_candidate_ids[i]);
+            }
+          }
+        }
       }
       
       // receive data....................................................
@@ -230,7 +286,7 @@ namespace ig_active_reconstruction
       do
       {
       	status_ = Status::DEMANDING_NEW_DATA;
-      	data_retrieval_status = robot_comm_unit_->retrieveData(); //do look at workspace, 
+      	data_retrieval_status = robot_comm_unit_->retrieveData(); 
       	
       	if( !runProcedure_ ) // exit point
       	{
@@ -257,8 +313,25 @@ namespace ig_active_reconstruction
 
       // getting cost and ig is wrapped in the utility calculator..................
       status_ = Status::NBV_CALCULATIONS;
-      views::View::IdType nbv_id = utility_calculator_->getNbv(view_candidate_ids, viewspace_, workstations_map_, workstation_constraint);
-      
+      views::View::IdType nbv_id = utility_calculator_->getNbv(new_view_candidate_ids, viewspace_, workstations_map_, workstation_constraint);
+
+      if (nbv_id >= 0 && nbv_id <= 12)
+      {
+        old_ws = "WS01";
+      }
+      else if (nbv_id >= 12 && nbv_id<=22 )
+      {
+        old_ws = "WS02";
+      }
+      else if (nbv_id>=24 && nbv_id<=34 )
+      {
+        old_ws = "WS03";
+      }
+      else if (nbv_id>=36 && nbv_id <=46 )
+      {
+        old_ws = "WS04";
+      }
+
       //result for next view (the next pose)
       views::View nbv = viewspace_->getView(nbv_id);
 
@@ -332,6 +405,8 @@ namespace ig_active_reconstruction
       viewspace_->setVisited(nbv_id);
       if( config_.max_visits!=-1 && viewspace_->timesVisited(nbv_id) >= config_.max_visits )
         viewspace_->setBad(nbv_id);
+      
+      iteration_number ++;
 
     }while( runProcedure_ );
     

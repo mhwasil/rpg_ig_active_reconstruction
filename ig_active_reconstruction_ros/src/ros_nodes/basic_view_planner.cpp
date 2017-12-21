@@ -76,7 +76,20 @@ int main(int argc, char **argv)
   iar::BasicViewPlanner::Config bvp_config;
   ros_tools::getParam( bvp_config.discard_visited, "discard_visited", false );
   ros_tools::getParam( bvp_config.max_visits, "max_visits", -1 );
-  
+
+  // load workstations for workstations constraints
+  // ..................................................................................................................
+  std::string yb_workstations_file_path;
+  ros_tools::getExpParam(yb_workstations_file_path, "yb_workstations_file_path");
+  //YoubotVS.set_workstations(yb_workstations_file_path);
+
+  std::map<int, std::string> ws_map = set_workstations_map(yb_workstations_file_path);
+  //bvp_config.file_name = yb_workstations_file_path;
+  //bvp_config.workstations_map = ws_map;
+  //Set workstations map to view_planner
+  //view_planner.set_workstations_map(ws_map);
+  //iar::BasicViewPlanner vp_(ws_map);
+
   // for the utility calculator
   double cost_weight;
   ros_tools::getParam( cost_weight, "cost_weight", 1.0 );
@@ -104,17 +117,7 @@ int main(int argc, char **argv)
   view_planner.setViewsCommUnit(views_comm);
   view_planner.setWorldCommUnit(world_comm);
 
-  // load workstations for workstations constraints
-  // ..................................................................................................................
-  std::string yb_workstations_file_path;
-  ros_tools::getExpParam(yb_workstations_file_path, "yb_workstations_file_path");
-  //YoubotVS.set_workstations(yb_workstations_file_path);
 
-  std::map<int, std::string> ws_map = set_workstations_map(yb_workstations_file_path);
-
-
-  //Set workstations map to view_planner
-  view_planner.set_workstations_map(ws_map);
 
   // want to use the weighted linear utility calculator, which directly interacts with world and robot comms too
   // ...................................................................................................................

@@ -67,13 +67,17 @@ namespace ig_active_reconstruction
         public:
           bool discard_visited; //! Whether views should be discarded once visited. Default: false.
           int max_visits; //! Maximal number a view can be visited before it is discarded, -1 = infinite. Default: -1.
+          std::map<int, std::string> workstations_map;
+          std::string file_name;
       };
       
     public:
       /*! Constructor.
        */
       BasicViewPlanner( Config config = Config() );
-      
+
+      //BasicViewPlanner( std::map<int, std::string> workstations_map);
+
       virtual ~BasicViewPlanner();
       
       /*! Sets the robot communication interface with which the view planner corresponds.
@@ -84,8 +88,8 @@ namespace ig_active_reconstruction
       /*! Sets the viewspace communication interface with which the view planner corresponds.
        * Can't be set if running.
        */
-      virtual void setViewsCommUnit( boost::shared_ptr<views::CommunicationInterface> views_comm_unit );
-      
+      virtual void setViewsCommUnit(boost::shared_ptr<views::CommunicationInterface> views_comm_unit);
+
       /*! Sets the world representation communication interface with which the view planner corresponds.
        * Can't be set if running.
        */
@@ -121,7 +125,7 @@ namespace ig_active_reconstruction
        */
       virtual Status status();
 
-      void set_workstations_map(std::map<int, std::string> workstations_map);
+      virtual void set_workstations_map(std::map<int, std::string> workstations_map);
       
     protected:
       /*! Returns if the view planner is ready to rumble.
@@ -154,6 +158,8 @@ namespace ig_active_reconstruction
       
       boost::shared_ptr<views::ViewSpace> viewspace_; //! Current viewspace.
       std::map<int, std::string> workstations_map_; //! workstations list
+
+      std::string old_ws;
       
   };
     
