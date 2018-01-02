@@ -189,19 +189,6 @@ namespace ig_active_reconstruction
     //node handle
     ros::NodeHandle nh;
 
-    //switch to camera point cloud
-    ros::Publisher cloud_msg_publisher = nh.advertise<std_msgs::String>("/mcr_perception/mux_pointcloud/select", 10);
-    std_msgs::String cloud_msg;
-    cloud_msg.data = "/arm_cam3d/depth_registered/points";
-    cloud_msg_publisher.publish(cloud_msg);
-
-    //trigger point cloud accumulator
-    ros::Publisher cloud_publisher = nh.advertise<std_msgs::String>("/mcr_perception/cloud_accumulator/event_in", 10);
-    cloud_msg.data = "e_start";
-    cloud_publisher.publish(cloud_msg);
-    cloud_msg.data = "e_start_publish";
-    cloud_publisher.publish(cloud_msg);
-
     old_ws="WS01";
 
     // preparation
@@ -235,8 +222,6 @@ namespace ig_active_reconstruction
     
     do
     {
-
-
       // determine view candidate subset of viewspace .....................
       views::ViewSpace::IdSet view_candidate_ids;
       viewspace_->getGoodViewSpace(view_candidate_ids, config_.discard_visited);
@@ -315,13 +300,12 @@ namespace ig_active_reconstruction
 
       std::cout<<"\nData reception nr. "<<++reception_nr<<"." <<"\n";
 
-      //add to cloud accumulator topic
-
+      //add point cloud accumulator
+      //..............................................................................................................
+      ros::Publisher cloud_publisher = nh.advertise<std_msgs::String>("/mcr_perception/cloud_accumulator/event_in", 10);
+      std_msgs::String cloud_msg;
       cloud_msg.data="e_add_cloud_start";
-      cloud_publisher.publish(cloud_msg);
-
-      //trigger object detection
-
+      cloud_publisher.publish(cloud_msg); 
 
       // check the viewspace......................................................
       std::map<views::View::IdType, views::View > views_index_map = viewspace_->get_views_index_map_();
@@ -332,7 +316,7 @@ namespace ig_active_reconstruction
       
       //...................
       //set workstation constraint
-      bool workstation_constraint = true;
+      bool workstation_constraint = false;
 
       // getting cost and ig is wrapped in the utility calculator..................
       status_ = Status::NBV_CALCULATIONS;
