@@ -117,4 +117,17 @@ add_dependencies(yb_move_base_safe
  ${catkin_EXPORTED_TARGETS}
 )
 
+add_executable(yb_trigger_robocup_topics
+  src/nodes/yb_trigger_robocup_topics.cpp
+  ${${PROJECT_NAME}_CODE_BASE}
+)
+
+target_link_libraries(yb_trigger_robocup_topics
+   ${catkin_LIBRARIES}
+   ${Boost_LIBRARIES}
+)
+add_dependencies(yb_trigger_robocup_topics
+ ${catkin_EXPORTED_TARGETS}
+)
+
 
