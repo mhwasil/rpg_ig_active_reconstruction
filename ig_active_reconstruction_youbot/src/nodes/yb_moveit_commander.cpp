@@ -1,4 +1,5 @@
 #include <ros/ros.h>
+#include <std_msgs/String.h>
 #include <moveit/move_group_interface/move_group.h>
 #include "ig_active_reconstruction_ros/param_loader.hpp"
 #include "ig_active_reconstruction_msgs/yb_move_arm_using_joints.h"
@@ -105,6 +106,14 @@ int main(int argc, char **argv)
   view_space.set_poses_space( yb_poses_space_file_path );
 
   view_space.set_workstations( yb_workstations_file_path );
+
+  //switch to camera point cloud
+  ros::Publisher mux_topic = nh.advertise<std_msgs::String>("/mcr_perception/mux_pointcloud/select", 1);
+  
+  std_msgs::String cloud_mux_msg;
+  //cloud_mux_msg.data = "/arm_cam3d/depth_registered/points";
+  cloud_mux_msg.data = "/arm_cam3d/depth_registered/points";
+  mux_topic.publish(cloud_mux_msg);
 
   ig_active_reconstruction_youbot::robot::RosServerYoubot yb_comm_unit( nh, view_space.get_joints_map(), 
                                                                             view_space.get_poses_map(), 
