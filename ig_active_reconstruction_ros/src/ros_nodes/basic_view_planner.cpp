@@ -25,6 +25,7 @@
 #include <boost/chrono/include.hpp>
 
 #include <ros/ros.h>
+#include <std_msgs/String.h>
 #include <ig_active_reconstruction/basic_view_planner.hpp>
 #include <ig_active_reconstruction/weighted_linear_utility.hpp>
 #include <ig_active_reconstruction/max_calls_termination_criteria.hpp>
@@ -132,17 +133,13 @@ int main(int argc, char **argv)
   }
   
   view_planner.setUtility(utility_calculator);
-  
-  
+
   // using a simple max. number of calls termination critera
   // ...................................................................................................................
   boost::shared_ptr<iar::GoalEvaluationModule> termination_criteria = boost::make_shared<iar::MaxCallsTerminationCriteria>(max_calls);
   
   view_planner.setGoalEvaluationModule(termination_criteria);
-  
-  
-  
-  
+
   // Simple command line user interface.
   // ...................................................................................................................
   bool keepReading = true;
@@ -196,7 +193,7 @@ int main(int argc, char **argv)
     {
       case 'g':
       	std::cout<<"Starting...";
-      	view_planner.run();
+        view_planner.run();
       	break;
       case 'p':
         std::cout<<"Pausing...";
