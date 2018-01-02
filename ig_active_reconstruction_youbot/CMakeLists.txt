@@ -130,4 +130,29 @@ add_dependencies(yb_trigger_robocup_topics
  ${catkin_EXPORTED_TARGETS}
 )
 
+add_executable(yb_trigger_cloud_e_start_publish
+  src/nodes/yb_trigger_cloud_e_start_publish.cpp
+  ${${PROJECT_NAME}_CODE_BASE}
+)
+
+target_link_libraries(yb_trigger_cloud_e_start_publish
+   ${catkin_LIBRARIES}
+   ${Boost_LIBRARIES}
+)
+add_dependencies(yb_trigger_cloud_e_start_publish
+ ${catkin_EXPORTED_TARGETS}
+)
+
+add_executable(yb_trigger_cloud_e_add_cloud_start
+  src/nodes/yb_trigger_cloud_e_add_cloud_start.cpp
+  ${${PROJECT_NAME}_CODE_BASE}
+)
+
+target_link_libraries(yb_trigger_cloud_e_add_cloud_start
+   ${catkin_LIBRARIES}
+   ${Boost_LIBRARIES}
+)
+add_dependencies(yb_trigger_cloud_e_add_cloud_start
+ ${catkin_EXPORTED_TARGETS}
+)
 
