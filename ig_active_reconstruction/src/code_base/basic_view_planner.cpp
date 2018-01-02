@@ -191,6 +191,9 @@ namespace ig_active_reconstruction
 
     old_ws="WS01";
 
+    //define publisher for e_add_cloud_start
+    ros::Publisher client_e_add_cloud_start = nh.advertise<std_msgs::String>("/mcr_perception/cloud_accumulator/event_in", 1);
+
     // preparation
     goal_evaluation_module_->reset();
     
@@ -302,11 +305,16 @@ namespace ig_active_reconstruction
 
       //add point cloud accumulator
       //..............................................................................................................
-      ros::Publisher cloud_publisher = nh.advertise<std_msgs::String>("/mcr_perception/cloud_accumulator/event_in", 10);
+      int numb_subscriber = 0;
       std_msgs::String cloud_msg;
-      cloud_msg.data="e_add_cloud_start";
-      cloud_publisher.publish(cloud_msg); 
+      cloud_msg.data = "e_add_cloud_start";
 
+      while(numb_subscriber == 0)
+      {
+        client_e_add_cloud_start.publish(cloud_msg);
+        numb_subscriber = client_e_add_cloud_start.getNumSubscribers();
+      }
+          
       // check the viewspace......................................................
       std::map<views::View::IdType, views::View > views_index_map = viewspace_->get_views_index_map_();
       for ( auto i : views_index_map) 
