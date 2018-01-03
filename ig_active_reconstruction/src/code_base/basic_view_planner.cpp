@@ -234,7 +234,7 @@ namespace ig_active_reconstruction
       }
 
       //std::string old_ws;
-      views::ViewSpace::IdSet new_view_candidate_ids;
+/*       views::ViewSpace::IdSet new_view_candidate_ids;
       if(iteration_number == 0)
       {
         new_view_candidate_ids = view_candidate_ids;
@@ -282,7 +282,7 @@ namespace ig_active_reconstruction
             }
           }
         }
-      }
+      } */
       
       // receive data....................................................
       robot::CommunicationInterface::ReceptionInfo data_retrieval_status;
@@ -328,9 +328,10 @@ namespace ig_active_reconstruction
 
       // getting cost and ig is wrapped in the utility calculator..................
       status_ = Status::NBV_CALCULATIONS;
-      views::View::IdType nbv_id = utility_calculator_->getNbv(new_view_candidate_ids, viewspace_, workstations_map_, workstation_constraint);
+      //views::View::IdType nbv_id = utility_calculator_->getNbv(new_view_candidate_ids, viewspace_, workstations_map_, workstation_constraint);
+      views::View::IdType nbv_id = utility_calculator_->getNbv(view_candidate_ids, viewspace_, workstations_map_, workstation_constraint);
 
-      if (nbv_id >= 0 && nbv_id <= 12)
+/*       if (nbv_id >= 0 && nbv_id <= 12)
       {
         old_ws = "WS01";
       }
@@ -345,7 +346,7 @@ namespace ig_active_reconstruction
       else if (nbv_id>=36 && nbv_id <=46 )
       {
         old_ws = "WS04";
-      }
+      } */
 
       //result for next view (the next pose)
       views::View nbv = viewspace_->getView(nbv_id);
