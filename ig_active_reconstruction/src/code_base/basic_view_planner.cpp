@@ -24,6 +24,7 @@
 #include <boost/chrono/include.hpp>
 #include <ros/ros.h>
 #include <std_msgs/String.h>
+#include <std_msgs/Int32.h>
 #include <string> 
 #include "ig_active_reconstruction_msgs/ybMoveToJoints.h"
 
@@ -184,16 +185,43 @@ namespace ig_active_reconstruction
   	&& goal_evaluation_module_!=nullptr;
   }
   
+  void BasicViewPlanner::obj_detector_cb(std_msgs::Int32 data)
+  {
+    detected_obj_num_ = data.data;
+    ROS_INFO("Detected object updated");
+    std::cout<<detected_obj_num_<<"\n";
+    counted_ = true;
+  }
+   
   void BasicViewPlanner::main()
   {    
     //node handle
     ros::NodeHandle nh;
 
-    old_ws="WS01";
+    BasicViewPlanner bvp;
 
+    /*struct OD
+    {
+      void obj_detector_cb(std_msgs::Int32 data)
+      {    
+        obj_num_ = data.data;
+        ROS_INFO("Detected object updated");
+        std::cout<<data.data<<"\n";
+        //counted_ = true;
+      }
+      int obj_num_;
+      bool count_;
+    };
+
+    OD od;*/
+
+    old_ws="WS01";
+    detected_obj_num_ = 0;
+    counted_ = false;
     //define publisher for e_add_cloud_start
     ros::Publisher client_e_add_cloud_start = nh.advertise<std_msgs::String>("/mcr_perception/cloud_accumulator/event_in", 1);
-
+    ros::Publisher client_object_detector = nh.advertise<std_msgs::Int32>("/yb_object_detector",1);
+    
     // preparation
     goal_evaluation_module_->reset();
     
@@ -244,6 +272,13 @@ namespace ig_active_reconstruction
         if (old_ws == "WS01")
         {
           for (unsigned int i = 0; i < view_candidate_ids.size(); ++i)
+          {
+            if (view_candidate_ids[i] > 12)
+            {
+              new_view_candidate_ids.push_back(view_candidate_ids[i]);
+            }
+
+          }
           {
             if (view_candidate_ids[i] > 12)
             {
@@ -314,7 +349,30 @@ namespace ig_active_reconstruction
         client_e_add_cloud_start.publish(cloud_msg);
         numb_subscriber = client_e_add_cloud_start.getNumSubscribers();
       }
-          
+      
+      int numb_sub_detector = 0;
+      std_msgs::Int32 obj_msg;
+      obj_msg.data = 2;
+      
+      counted_ = false; //false means that the message has not arrived
+      
+      std_msgs::Int32::ConstPtr received_msg = ros::topic::waitForMessage<std_msgs::Int32>("yb_object_detector_result", ros::Duration(10.0));
+
+      //std::cout<<"Received Message: "<<received_msg<<"\n";
+
+      //while(counted_ == false)
+      //{
+      //  ROS_INFO("Waiting for message from yb_object_detector_result");
+      //  ros::Subscriber sub = nh.subscribe("yb_object_detector_result", 1, &OD::obj_detector_cb, &od);
+    
+      //}
+      
+      /*while(numb_sub_detector == 0)
+      {
+        ROS_INFO("Communicating with object detector");
+        client_object_detector.publish(obj_msg);
+        numb_sub_detector = client_object_detector.getNumSubscribers();
+      } */  
       // check the viewspace......................................................
       std::map<views::View::IdType, views::View > views_index_map = viewspace_->get_views_index_map_();
       for ( auto i : views_index_map) 
