@@ -33,12 +33,13 @@ namespace robot
 {
 
   RosServerYoubot::RosServerYoubot ( ros::NodeHandle nh, std::map<int, std::map<std::string, double> > joints_map,
-                                      std::map<int, geometry_msgs::Pose> poses_map, std::map<int, std::string> workstations_map, std::string start_ws )
+                                      std::map<int, geometry_msgs::Pose> poses_map, std::map<int, std::string> workstations_map, std::string start_ws, bool ws_constraint )
   {
     joints_map_ = joints_map;
     poses_map_ = poses_map;
     workstations_map_ = workstations_map;
     old_ws_ = start_ws;
+    ws_constraint_ = ws_constraint;
     robot_moving_service_ = nh.advertiseService("youbot/move_to", &RosServerYoubot::moveToService, this );
     //robot_moving_to_joints_service_ = nh.advertiseService("youbot/move_to_joints", &RosServerYoubot::moveToJointsService, this );
   }
@@ -52,7 +53,8 @@ namespace robot
     //std::string id = RosServerYoubot::poseToJoints( pose );
     
     int id = RosServerYoubot::poseToJoints(pose);
-
+    if (ws_constraint_ == true)
+    {
     if (workstations_map_.at(id) == old_ws_)
     {
       bool success = RosServerYoubot::moveArmUsingJoints(joints_map_.at(id));
@@ -74,6 +76,12 @@ namespace robot
         //keep old_ws and still return true in the ws
         res.success = true;
       }
+    }
+    }
+    else
+    {
+      bool success = RosServerYoubot::moveArmUsingJoints(joints_map_.at(id));
+      res.success = success;
     }
     
     //res.success = true;
