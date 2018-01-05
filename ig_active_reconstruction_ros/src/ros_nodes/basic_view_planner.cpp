@@ -35,6 +35,7 @@
 #include "ig_active_reconstruction_ros/views_ros_client_ci.hpp"
 #include "ig_active_reconstruction_ros/world_representation_ros_client_ci.hpp"
 
+#include "ig_active_reconstruction_ros/youbot_ros_client.hpp"
 
 /*! Implements a ROS node holding a BasicViewPlanner, combined with a simple command line user interface.
  */
@@ -75,8 +76,8 @@ int main(int argc, char **argv)
   
   // for the view planner:
   iar::BasicViewPlanner::Config bvp_config;
-  ros_tools::getParam( bvp_config.discard_visited, "discard_visited", false );
-  ros_tools::getParam( bvp_config.max_visits, "max_visits", -1 );
+  ros_tools::getParam( bvp_config.discard_visited, "discard_visited", true );
+  ros_tools::getParam( bvp_config.max_visits, "max_visits", 1 );
 
   // load workstations for workstations constraints
   // ..................................................................................................................
@@ -114,11 +115,14 @@ int main(int argc, char **argv)
   boost::shared_ptr<iar::views::CommunicationInterface> views_comm = boost::make_shared<iar::views::RosClientCI>(nh);
   boost::shared_ptr<iar::world_representation::CommunicationInterface> world_comm = boost::make_shared<iar::world_representation::RosClientCI>(nh);
   
+  boost::shared_ptr<iar::robot::YoubotCommunicationInterface> youbot_comm = boost::make_shared<iar::robot::YoubotRosClient>(nh);
+
+
   view_planner.setRobotCommUnit(robot_comm);
   view_planner.setViewsCommUnit(views_comm);
   view_planner.setWorldCommUnit(world_comm);
 
-
+  view_planner.setYobotCommUnit(youbot_comm);
 
   // want to use the weighted linear utility calculator, which directly interacts with world and robot comms too
   // ...................................................................................................................

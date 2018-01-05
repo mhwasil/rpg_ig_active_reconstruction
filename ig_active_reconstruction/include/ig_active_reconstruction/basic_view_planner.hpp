@@ -28,6 +28,7 @@
 #include "ig_active_reconstruction/utility_calculator.hpp"
 #include "ig_active_reconstruction/goal_evaluation_module.hpp"
 #include "ig_active_reconstruction/view_space.hpp"
+#include "ig_active_reconstruction/youbot_communication_interface.hpp"
 
 namespace ig_active_reconstruction
 {
@@ -86,6 +87,8 @@ namespace ig_active_reconstruction
        */
       virtual void setRobotCommUnit( boost::shared_ptr<robot::CommunicationInterface> robot_comm_unit );
       
+      virtual void setYobotCommUnit( boost::shared_ptr<robot::YoubotCommunicationInterface> youbot_comm_unit );
+
       /*! Sets the viewspace communication interface with which the view planner corresponds.
        * Can't be set if running.
        */
@@ -149,7 +152,9 @@ namespace ig_active_reconstruction
       boost::shared_ptr<robot::CommunicationInterface> robot_comm_unit_; //! Robot communication interface with which the view planner corresponds.
       boost::shared_ptr<views::CommunicationInterface> views_comm_unit_; //! Viewspace communication interface with which the view planner corresponds.
       boost::shared_ptr<world_representation::CommunicationInterface> world_comm_unit_; //! World representation communication interface with which the view planner corresponds.
-      
+
+      boost::shared_ptr<robot::YoubotCommunicationInterface> youbot_comm_unit_; // Youbot comm unit
+
       boost::shared_ptr<UtilityCalculator> utility_calculator_; //! Utility calculator for evaluating different views. It also defines which information gains are used.
       boost::shared_ptr<GoalEvaluationModule> goal_evaluation_module_; //! Goal evaluation module which determines if the view planner shall continue or not.
       

@@ -41,6 +41,7 @@ namespace ig_active_reconstruction
   BasicViewPlanner::BasicViewPlanner(Config config)
   : config_(config)
   , robot_comm_unit_(nullptr)
+  , youbot_comm_unit_(nullptr)
   , views_comm_unit_(nullptr)
   , world_comm_unit_(nullptr)
   , utility_calculator_(nullptr)
@@ -71,6 +72,19 @@ namespace ig_active_reconstruction
       return;
     
     robot_comm_unit_ = robot_comm_unit;
+    
+    if( isReady() && status_==Status::UNINITIALIZED )
+      status_ = Status::IDLE;
+    else
+      status_ = Status::UNINITIALIZED;
+  }
+
+  void BasicViewPlanner::setYobotCommUnit( boost::shared_ptr<robot::YoubotCommunicationInterface> youbot_comm_unit )
+  {
+    if( runProcedure_ || running_procedure_.joinable() )
+      return;
+    
+    youbot_comm_unit_ = youbot_comm_unit;
     
     if( isReady() && status_==Status::UNINITIALIZED )
       status_ = Status::IDLE;
@@ -356,7 +370,7 @@ namespace ig_active_reconstruction
       
       counted_ = false; //false means that the message has not arrived
       
-      std_msgs::Int32::ConstPtr received_msg = ros::topic::waitForMessage<std_msgs::Int32>("yb_object_detector_result", ros::Duration(10.0));
+      //std_msgs::Int32::ConstPtr received_msg = ros::topic::waitForMessage<std_msgs::Int32>("yb_object_detector_result", ros::Duration(10.0));
 
       //std::cout<<"Received Message: "<<received_msg<<"\n";
 
