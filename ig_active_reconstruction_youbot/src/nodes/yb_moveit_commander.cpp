@@ -93,6 +93,7 @@ int main(int argc, char **argv)
   std::string yb_poses_space_file_path;
   std::string yb_workstations_file_path;
   std::string start_ws;
+  bool ws_constraint = false;
   ros_tools::getExpParam(yb_joints_space_file_path,"yb_joints_space_file_path");
   ros_tools::getExpParam(yb_poses_space_file_path,"yb_poses_space_file_path");
   ros_tools::getExpParam(yb_workstations_file_path, "yb_workstations_file_path");
@@ -118,7 +119,8 @@ int main(int argc, char **argv)
   ig_active_reconstruction_youbot::robot::RosServerYoubot yb_comm_unit( nh, view_space.get_joints_map(), 
                                                                             view_space.get_poses_map(), 
                                                                             view_space.get_workstations_map(),
-                                                                            start_ws );
+                                                                            start_ws,
+                                                                            ws_constraint );
 
   std::map<int, geometry_msgs::Pose> poses_map = view_space.get_poses_map();
   

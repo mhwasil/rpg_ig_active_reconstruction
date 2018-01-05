@@ -20,6 +20,7 @@
 #include <thread>
 #include <mutex>
 #include <string> 
+#include <std_msgs/Int32.h>
 
 #include "ig_active_reconstruction/robot_communication_interface.hpp"
 #include "ig_active_reconstruction/views_communication_interface.hpp"
@@ -139,6 +140,8 @@ namespace ig_active_reconstruction
       /*! Pausing if set. TODO: use condition variable
        */
       void pausePoint();
+
+      void obj_detector_cb(std_msgs::Int32 data);
       
     protected:
       Config config_; //! View planner configuration.
@@ -160,6 +163,8 @@ namespace ig_active_reconstruction
       std::map<int, std::string> workstations_map_; //! workstations list
 
       std::string old_ws;
+      int detected_obj_num_;
+      bool counted_;
       
   };
     

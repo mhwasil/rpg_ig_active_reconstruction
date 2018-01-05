@@ -38,7 +38,7 @@ namespace robot
      * @param linked_interface (optional) directly add the interface that is linked internally (to which requests are forwarded.
      */
     RosServerYoubot( ros::NodeHandle nh, std::map<int,std::map<std::string, double> > joints_map,
-                       std::map<int, geometry_msgs::Pose> poses_map, std::map<int, std::string> workstations_map, std::string start_ws );
+                       std::map<int, geometry_msgs::Pose> poses_map, std::map<int, std::string> workstations_map, std::string start_ws, bool ws_constraint );
 
     std::map<std::string, double> get_joints_map();
 
@@ -71,6 +71,7 @@ namespace robot
     std::map<int, geometry_msgs::Pose> poses_map_;
     std::map<int, std::string> workstations_map_;
     std::string old_ws_;
+    bool ws_constraint_;
 
     ros::ServiceServer robot_moving_service_;
     ros::ServiceServer robot_moving_to_joints_service_;
