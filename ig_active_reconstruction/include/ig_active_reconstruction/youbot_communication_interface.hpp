@@ -17,9 +17,7 @@
 
 #pragma once
 
-#include "ig_active_reconstruction/view_space.hpp"
-#include "ig_active_reconstruction/view.hpp"
-#include "ig_active_reconstruction/robot_movement_cost.hpp"
+#include "std_msgs/Int32.h"
 
 namespace ig_active_reconstruction
 {
@@ -42,41 +40,14 @@ public:
     FAILED=1
   };
   
-public:  
-  virtual ~YoubotCommunicationInterface(){};
-  
-  /*! returns the current view */
-  virtual views::View getCurrentView()=0;
-  
-  /*! Commands robot to retrieve new data.
-   * @return information about what happened (data received, receival failed )
-   */
-  virtual ReceptionInfo retrieveData()=0;
-  
-  /*! Returns the cost to move from the current view to the indicated view
-   * @param target_view the next view
-   * @return cost to move to that view
-   */
-  virtual MovementCost movementCost( views::View& target_view )=0;
-  
-  /*! returns the cost to move from start view to target view
-   * @param start_view the start view
-   * @param target_view the target view
-   * @param fill_additional_information if true then the different parts of the cost will be included in the additional fields as well
-   * @return cost for the movement
-   */
-  virtual MovementCost movementCost( views::View& start_view, views::View& target_view, bool fill_additional_information  )=0;
-  
-  /*! Tells the robot to get the camera to a new view
-   * @param target_view where to move to
-   * @return false if the operation failed
-   */
-  virtual bool moveTo( views::View& target_view )=0;
+  public:
+    /*! Constructor
+     * @param nh_sub ROS node handle defines the namespace in which ROS communication will be carried out for any topic or service subscribers.
+     */
+    virtual ~YoubotCommunicationInterface(){};
 
-  /*
-  * Move arm using joints
-  */
-  virtual bool moveUsingJoints ( std::map<std::string, double>& joints_map )=0;
+    virtual std_msgs::Int32 runObjectDetector(std_msgs::Int32)=0;
+
 };
 
 }
