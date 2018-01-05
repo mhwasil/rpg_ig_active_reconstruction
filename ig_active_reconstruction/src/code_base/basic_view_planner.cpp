@@ -214,21 +214,6 @@ namespace ig_active_reconstruction
 
     BasicViewPlanner bvp;
 
-    /*struct OD
-    {
-      void obj_detector_cb(std_msgs::Int32 data)
-      {    
-        obj_num_ = data.data;
-        ROS_INFO("Detected object updated");
-        std::cout<<data.data<<"\n";
-        //counted_ = true;
-      }
-      int obj_num_;
-      bool count_;
-    };
-
-    OD od;*/
-
     old_ws="WS01";
     detected_obj_num_ = 0;
     counted_ = false;
@@ -370,23 +355,10 @@ namespace ig_active_reconstruction
       
       counted_ = false; //false means that the message has not arrived
       
-      //std_msgs::Int32::ConstPtr received_msg = ros::topic::waitForMessage<std_msgs::Int32>("yb_object_detector_result", ros::Duration(10.0));
+      std_msgs::Int32 obj_result = youbot_comm_unit_->runObjectDetector(obj_msg);
 
-      //std::cout<<"Received Message: "<<received_msg<<"\n";
-
-      //while(counted_ == false)
-      //{
-      //  ROS_INFO("Waiting for message from yb_object_detector_result");
-      //  ros::Subscriber sub = nh.subscribe("yb_object_detector_result", 1, &OD::obj_detector_cb, &od);
-    
-      //}
-      
-      /*while(numb_sub_detector == 0)
-      {
-        ROS_INFO("Communicating with object detector");
-        client_object_detector.publish(obj_msg);
-        numb_sub_detector = client_object_detector.getNumSubscribers();
-      } */  
+      std::cout<<"Obj detector result: "<<obj_result.data<<"\n";
+       
       // check the viewspace......................................................
       std::map<views::View::IdType, views::View > views_index_map = viewspace_->get_views_index_map_();
       for ( auto i : views_index_map) 
