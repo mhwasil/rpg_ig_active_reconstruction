@@ -22,6 +22,7 @@
 #include "mir_yb_action_msgs/MoveBaseSafeAction.h"
 #include "mir_yb_action_msgs/MoveBaseSafeGoal.h"
 #include "ig_active_reconstruction_msgs/StringMsgs.h"
+#include "ig_active_reconstruction_msgs/youbotMoveToInit.h"
 //#include "ig_active_reconstruction_ros/robot_ros_server_ci.hpp"
 //#include "ig_active_reconstruction_ros/robot_conversions.hpp"
 //#include "ig_active_reconstruction_ros/views_conversions.hpp"
@@ -41,6 +42,8 @@ namespace robot
     old_ws_ = start_ws;
     ws_constraint_ = ws_constraint;
     robot_moving_service_ = nh.advertiseService("youbot/move_to", &RosServerYoubot::moveToService, this );
+    robot_moving_to_init_service_ = nh.advertiseService("youbot/move_to_init", &RosServerYoubot::move_base_safe_to_init, this);
+
     //robot_moving_to_joints_service_ = nh.advertiseService("youbot/move_to_joints", &RosServerYoubot::moveToJointsService, this );
   }
 
@@ -55,28 +58,28 @@ namespace robot
     int id = RosServerYoubot::poseToJoints(pose);
     if (ws_constraint_ == true)
     {
-    if (workstations_map_.at(id) == old_ws_)
-    {
-      bool success = RosServerYoubot::moveArmUsingJoints(joints_map_.at(id));
-      res.success = success;
-    }
-    else
-    { 
-      std::string new_ws = workstations_map_.at(id);
-      //do youbot nav movement
-      //nav_movement_fb = nav_movement(old_ws_, new_ws_)
-      bool nav_result = RosServerYoubot::move_base_safe(old_ws_, new_ws);
-      
-      //res.success = nav_result;
-      if (nav_result) {
+      if (workstations_map_.at(id) == old_ws_)
+      {
         bool success = RosServerYoubot::moveArmUsingJoints(joints_map_.at(id));
         res.success = success;
-        old_ws_ = new_ws;
-      } else {
-        //keep old_ws and still return true in the ws
-        res.success = true;
       }
-    }
+      else
+      { 
+        std::string new_ws = workstations_map_.at(id);
+        //do youbot nav movement
+        //nav_movement_fb = nav_movement(old_ws_, new_ws_)
+        bool nav_result = RosServerYoubot::move_base_safe(old_ws_, new_ws);
+        
+        //res.success = nav_result;
+        if (nav_result) {
+          bool success = RosServerYoubot::moveArmUsingJoints(joints_map_.at(id));
+          res.success = success;
+          old_ws_ = new_ws;
+        } else {
+          //keep old_ws and still return true in the ws
+          res.success = true;
+        }
+      }
     }
     else
     {
@@ -197,6 +200,42 @@ namespace robot
     sleep(1.0); //wait for stop command
 
     return true;
+  }
+
+  bool RosServerYoubot::move_base_safe_to_init(ig_active_reconstruction_msgs::youbotMoveToInit::Request &req,
+                                             ig_active_reconstruction_msgs::youbotMoveToInit::Response &res)
+  {
+    actionlib::SimpleActionClient<mir_yb_action_msgs::MoveBaseSafeAction> client("move_base_safe_server", true);
+    ROS_INFO("Waiting for MoveBaseSafeServer to start.");
+    client.waitForServer(); //will wait for infinite time
+
+    ROS_INFO("MoveBaseSafeServer started, sending goal.");
+    mir_yb_action_msgs::MoveBaseSafeGoal goal;
+    goal.arm_safe_position = req.arm_safe_position;
+    goal.source_location = req.source;
+    goal.destination_location = req.destination;
+
+    int timeout = 30;
+    ROS_INFO("Sending action lib goal to move_base_safe_server");
+    client.sendGoal(goal);
+    client.waitForResult(ros::Duration(timeout));
+    client.cancelGoal();
+
+    actionlib::SimpleClientGoalState state = client.getState();
+    ROS_INFO("MoveBaseSafe server finished: %s", state.toString().c_str());
+    std::string result = state.toString();
+
+    //bool res.success = false;
+    if (result == "SUCCEEDED")
+    {
+      res.success = true;
+    }
+    else
+    {
+      res.success = false;
+    }
+
+    return res.success;
   }
 
 }

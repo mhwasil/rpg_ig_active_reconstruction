@@ -38,6 +38,7 @@ add_service_files(
   ybMoveToJoints.srv
   youbotMoveToOrder.srv
   youbotObjectDetector.srv
+  youbotMoveToInit.srv
 )
 
 generate_messages(

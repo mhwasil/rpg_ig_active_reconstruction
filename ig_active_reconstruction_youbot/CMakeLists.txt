@@ -77,16 +77,16 @@ add_service_files(
 
 # Executables...........................................................
 
-add_executable(yb_moveit_commander
-  src/nodes/yb_moveit_commander.cpp
+add_executable(yb_ros_server_node
+  src/nodes/yb_ros_server_node.cpp
   ${${PROJECT_NAME}_CODE_BASE}
 )
 
-target_link_libraries(yb_moveit_commander
+target_link_libraries(yb_ros_server_node
    ${catkin_LIBRARIES}
    ${Boost_LIBRARIES}
 )
-add_dependencies(yb_moveit_commander
+add_dependencies(yb_ros_server_node
  ${catkin_EXPORTED_TARGETS}
 )
 

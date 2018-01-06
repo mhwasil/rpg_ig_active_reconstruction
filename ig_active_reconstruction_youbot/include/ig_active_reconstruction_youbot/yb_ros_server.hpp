@@ -18,6 +18,7 @@
 #include "mir_yb_action_msgs/MoveBaseSafeAction.h"
 #include "mir_yb_action_msgs/MoveBaseSafeGoal.h"
 #include "ig_active_reconstruction_msgs/StringMsgs.h"
+#include "ig_active_reconstruction_msgs/youbotMoveToInit.h"
 
 namespace ig_active_reconstruction_youbot
 {
@@ -44,7 +45,6 @@ namespace robot
 
     void set_joints_map(double joint_0, double joint_1, double joint_2, double joint_3, double joint_4 );
 
-
     //bool moveToUsingJoints( views::View& target_view );
     
   protected:    
@@ -63,7 +63,9 @@ namespace robot
 
     bool move_base_safe( std::string start, std::string end);
 
-    
+    bool move_base_safe_to_init(ig_active_reconstruction_msgs::youbotMoveToInit::Request &req,
+                                ig_active_reconstruction_msgs::youbotMoveToInit::Response &res);
+
   protected:
     ros::NodeHandle nh_;
     //std::map<std::string, double> joints_map_;
@@ -74,6 +76,7 @@ namespace robot
     bool ws_constraint_;
 
     ros::ServiceServer robot_moving_service_;
+    ros::ServiceServer robot_moving_to_init_service_;
     ros::ServiceServer robot_moving_to_joints_service_;
 
   };
