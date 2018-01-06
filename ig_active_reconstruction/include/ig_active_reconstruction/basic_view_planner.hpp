@@ -69,6 +69,7 @@ namespace ig_active_reconstruction
         public:
           bool discard_visited; //! Whether views should be discarded once visited. Default: false.
           int max_visits; //! Maximal number a view can be visited before it is discarded, -1 = infinite. Default: -1.
+          bool random_view; //default false
           std::map<int, std::string> workstations_map;
           std::string file_name;
       };

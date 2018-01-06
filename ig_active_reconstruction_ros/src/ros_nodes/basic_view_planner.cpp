@@ -78,6 +78,7 @@ int main(int argc, char **argv)
   iar::BasicViewPlanner::Config bvp_config;
   ros_tools::getParam( bvp_config.discard_visited, "discard_visited", true );
   ros_tools::getParam( bvp_config.max_visits, "max_visits", 1 );
+  ros_tools::getParam( bvp_config.random_view, "random_view", false);
 
   // load workstations for workstations constraints
   // ..................................................................................................................

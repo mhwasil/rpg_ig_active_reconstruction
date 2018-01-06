@@ -33,8 +33,9 @@ namespace ig_active_reconstruction
 {
   
   BasicViewPlanner::Config::Config()
-  : discard_visited(false)
-  , max_visits(-1)
+  : discard_visited(true)
+  , max_visits(1)
+  , random_view(false)
   {
   }
   
@@ -219,7 +220,6 @@ namespace ig_active_reconstruction
     counted_ = false;
     //define publisher for e_add_cloud_start
     ros::Publisher client_e_add_cloud_start = nh.advertise<std_msgs::String>("/mcr_perception/cloud_accumulator/event_in", 1);
-    ros::Publisher client_object_detector = nh.advertise<std_msgs::Int32>("/yb_object_detector",1);
     
     // preparation
     goal_evaluation_module_->reset();
@@ -349,15 +349,16 @@ namespace ig_active_reconstruction
         numb_subscriber = client_e_add_cloud_start.getNumSubscribers();
       }
       
-      int numb_sub_detector = 0;
-      std_msgs::Int32 obj_msg;
-      obj_msg.data = 2;
-      
-      counted_ = false; //false means that the message has not arrived
-      
-      std_msgs::Int32 obj_result = youbot_comm_unit_->runObjectDetector(obj_msg);
+      if (iteration_number % 2 == 0)
+      {
+        ROS_INFO("Running object detector...");
+        std_msgs::Int32 obj_msg;
+        obj_msg.data = 2;
 
-      std::cout<<"Obj detector result: "<<obj_result.data<<"\n";
+        std_msgs::Int32 obj_result = youbot_comm_unit_->runObjectDetector(obj_msg);
+
+        std::cout << "Obj detector result: " << obj_result.data << "\n";
+      }
        
       // check the viewspace......................................................
       std::map<views::View::IdType, views::View > views_index_map = viewspace_->get_views_index_map_();
@@ -372,9 +373,19 @@ namespace ig_active_reconstruction
 
       // getting cost and ig is wrapped in the utility calculator..................
       status_ = Status::NBV_CALCULATIONS;
-      //views::View::IdType nbv_id = utility_calculator_->getNbv(new_view_candidate_ids, viewspace_, workstations_map_, workstation_constraint);
-      views::View::IdType nbv_id = utility_calculator_->getNbv(view_candidate_ids, viewspace_, workstations_map_, workstation_constraint);
-
+      views::View::IdType nbv_id;
+      if (config_.random_view == false)
+      {
+        //views::View::IdType nbv_id = utility_calculator_->getNbv(new_view_candidate_ids, viewspace_, workstations_map_, workstation_constraint);
+        nbv_id = utility_calculator_->getNbv(view_candidate_ids, viewspace_, workstations_map_, workstation_constraint);
+        ROS_INFO("NBV is calculated by cost function");
+      }
+      else
+      {
+        //std::vector<View::IdType> IdSet = view_candidate_ids;
+        nbv_id = rand() % view_candidate_ids.size();
+        ROS_INFO("NBV is selected randomly");
+      }
 /*       if (nbv_id >= 0 && nbv_id <= 12)
       {
         old_ws = "WS01";
