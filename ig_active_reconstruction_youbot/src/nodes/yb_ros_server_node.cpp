@@ -101,14 +101,14 @@ int main(int argc, char **argv)
   initMsg.request.source = "START";
   initMsg.request.destination = start_ws;
 
-  bool init_state = ros::service::call("/youbot/move_to_init", initMsg);
+  /*bool init_state = ros::service::call("/youbot/move_to_init", initMsg);
   if (init_state) 
   {
     ROS_INFO("Youbot already in init state");
   }
   else{
     ROS_INFO("Failed to move youbot to init state");
-  }
+  }*/
 
   
   std::map<int, geometry_msgs::Pose> poses_map = view_space.get_poses_map();

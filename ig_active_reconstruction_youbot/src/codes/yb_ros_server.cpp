@@ -168,8 +168,8 @@ namespace robot
   {
     robot_state::RobotStatePtr current_state;
     moveit::planning_interface::MoveGroup group("arm_1");
-    ros::AsyncSpinner spinner(1);
-    spinner.start();
+    //ros::AsyncSpinner spinner(1);
+    //spinner.start();
     //set currentState to StartState
     group.setStartStateToCurrentState();
     
@@ -224,10 +224,19 @@ namespace robot
     actionlib::SimpleClientGoalState state = client.getState();
     ROS_INFO("MoveBaseSafe server finished: %s", state.toString().c_str());
     std::string result = state.toString();
+    
+    //This joint conf is standard for looking at workspace
 
     //bool res.success = false;
     if (result == "SUCCEEDED")
     {
+      std::map<std::string, double> look_at_ws;
+      look_at_ws["arm_joint_1"] = 2.1789;
+      look_at_ws["arm_joint_2"] = 0.890994;
+      look_at_ws["arm_joint_3"] = -1.00699;
+      look_at_ws["arm_joint_4"] = 3.3485;
+      look_at_ws["arm_joint_5"] = 2.9142;
+      bool result_mv_joint = RosServerYoubot::moveArmUsingJoints(look_at_ws);
       res.success = true;
     }
     else
