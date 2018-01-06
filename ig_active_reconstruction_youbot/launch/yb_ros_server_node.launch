@@ -7,5 +7,6 @@
 		<param name="start_ws" value="WS01" />
 	</node>
     <node pkg="ig_active_reconstruction_youbot" type="yb_perceive_location_client_node.py" name="yb_perceive_location_client_node" output="screen"/>
+	<node pkg="ig_active_reconstruction_youbot" type="yb_trigger_robocup_topics" name="yb_trigger_robocup_topics" output="screen"/>
     <include file="$(find ig_active_reconstruction_youbot)/launch/logging.launch"/>
 </launch>

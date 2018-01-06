@@ -99,7 +99,7 @@ int main(int argc, char **argv)
     }
 
     std::cout << "Subscribers cloud_acc event_in: " << client_cloud_acc.getNumSubscribers() <<"\n";
-    sleep(5);
+    sleep(2);
     
     ros::spinOnce();
   }
