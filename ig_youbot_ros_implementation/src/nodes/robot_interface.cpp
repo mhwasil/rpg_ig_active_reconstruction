@@ -68,7 +68,7 @@ int main(int argc, char **argv)
   
   
   // spin...
-  ROS_INFO_STREAM("Flying gazebo stereo camera robot interface is setup.");
+  ROS_INFO_STREAM("Youbot interface and comm interface is ready.");
   ros::spin();
   
   return 0;
