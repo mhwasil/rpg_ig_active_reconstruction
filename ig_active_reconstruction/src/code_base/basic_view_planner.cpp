@@ -387,8 +387,9 @@ namespace ig_active_reconstruction
         int random_id = rand() % view_candidate_ids.size();
         std::cout<<"View candidate size: "<< view_candidate_ids.size()<<"\n";
         std::cout<<"Random view: "<<random_id<<"\n";
-        std::cout<<"Randomly Selected ids: "<<view_candidate_ids[random_id];
+        std::cout<<"Randomly Selected ids: "<<view_candidate_ids[random_id]<<"\n";
         ROS_INFO("NBV is selected randomly");
+        nbv_id = view_candidate_ids[random_id];
       }
 /*       if (nbv_id >= 0 && nbv_id <= 12)
       {
