@@ -248,7 +248,7 @@ namespace ig_active_reconstruction
     
     unsigned int reception_nr = 0;
     unsigned int moving_nr = 0;
-    int iteration_number = 0;
+    int iteration_number = 1;
     
     do
     {
@@ -383,7 +383,11 @@ namespace ig_active_reconstruction
       else
       {
         //std::vector<View::IdType> IdSet = view_candidate_ids;
-        nbv_id = rand() % view_candidate_ids.size();
+        //nbv_id = rand() % view_candidate_ids.size();
+        int random_id = rand() % view_candidate_ids.size();
+        std::cout<<"View candidate size: "<< view_candidate_ids.size()<<"\n";
+        std::cout<<"Random view: "<<random_id<<"\n";
+        std::cout<<"Randomly Selected ids: "<<view_candidate_ids[random_id];
         ROS_INFO("NBV is selected randomly");
       }
 /*       if (nbv_id >= 0 && nbv_id <= 12)
