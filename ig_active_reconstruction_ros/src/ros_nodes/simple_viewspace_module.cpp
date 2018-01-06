@@ -45,7 +45,7 @@ int main(int argc, char **argv)
   
   
   // spin...
-  ROS_INFO("simple_viewspace_module is ready");
+  ROS_INFO("Viewspace module and server are ready");
   ros::spin();
   
   return 0;
