@@ -1,12 +1,18 @@
 <?xml version="1.0"?>
 <launch>
+	<arg name="object_detector" default="false" />
+
 	<node pkg="ig_active_reconstruction_youbot" type="yb_ros_server_node" name="yb_ros_server_node" clear_params="true" output="screen">
-    	<param name="yb_joints_space_file_path" value="$(find ig_active_reconstruction_youbot)/config/yb_6_views_joints.txt" />
-        <param name="yb_poses_space_file_path" value="$(find ig_active_reconstruction_youbot)/config/yb_6_views_poses.txt" />
-		<param name="yb_workstations_file_path" value="$(find ig_active_reconstruction_youbot)/config/yb_6_views_workstations.txt" />
+    	<param name="yb_joints_space_file_path" value="$(find ig_active_reconstruction_youbot)/config/yb_44_views_joints.txt" />
+        <param name="yb_poses_space_file_path" value="$(find ig_active_reconstruction_youbot)/config/yb_44_views_poses.txt" />
+		<param name="yb_workstations_file_path" value="$(find ig_active_reconstruction_youbot)/config/yb_44_views_workstations.txt" />
 		<param name="start_ws" value="WS01" />
 	</node>
-    <node pkg="ig_active_reconstruction_youbot" type="yb_perceive_location_client_node.py" name="yb_perceive_location_client_node" output="screen"/>
-	<node pkg="ig_active_reconstruction_youbot" type="yb_trigger_robocup_topics" name="yb_trigger_robocup_topics" output="screen"/>
+
+	<group if="$(arg object_detector)" >
+		<node pkg="ig_active_reconstruction_youbot" type="yb_perceive_location_client_node.py" name="yb_perceive_location_client_node" output="screen"/>
+		<node pkg="ig_active_reconstruction_youbot" type="yb_trigger_robocup_topics" name="yb_trigger_robocup_topics" output="screen"/>	
+    </group>
+
     <include file="$(find ig_active_reconstruction_youbot)/launch/logging.launch"/>
 </launch>
