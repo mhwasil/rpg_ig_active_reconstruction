@@ -106,7 +106,7 @@ namespace octomap
     {
       if( utils_.isOccupied(p_occ) && previous_voxel_unknown_ )
       {
-	++rear_side_voxel_count_;
+	      ++rear_side_voxel_count_;
       }
       
       previous_voxel_unknown_=false;

@@ -102,7 +102,7 @@ namespace octomap
     }
     else if( !voxel->hasMeasurement() )
     {
-	p_occ=config.p_unknown_prior; // default for unknown
+	    p_occ=config.p_unknown_prior; // default for unknown
     }
     else
     {

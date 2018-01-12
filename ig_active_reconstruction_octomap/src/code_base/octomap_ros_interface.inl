@@ -69,10 +69,10 @@ namespace octomap
       
       if( this->link_.octree->isNodeOccupied(*it) )
       {
-	double size = it.getSize();
-	assert(idx < occupiedNodesVis.markers.size());
-	
-	occupiedNodesVis.markers[idx].points.push_back(cubeCenter);
+        double size = it.getSize();
+        assert(idx < occupiedNodesVis.markers.size());
+        
+        occupiedNodesVis.markers[idx].points.push_back(cubeCenter);
       }
     }
     
