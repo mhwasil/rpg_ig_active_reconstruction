@@ -220,8 +220,9 @@ namespace ig_active_reconstruction
     detected_obj_num_ = 0;
     counted_ = false;
     //define publisher for e_add_cloud_start
+    ros::Publisher client_e_add_cloud_start;
     if (config_.object_detector == true){
-      ros::Publisher client_e_add_cloud_start = nh.advertise<std_msgs::String>("/mcr_perception/cloud_accumulator/event_in", 1);
+      client_e_add_cloud_start = nh.advertise<std_msgs::String>("/mcr_perception/cloud_accumulator/event_in", 1);
     }
     
     // preparation
