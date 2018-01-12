@@ -57,7 +57,7 @@ namespace world_representation
       
       for(unsigned int i=0; i<number_of_metrics; ++i )
       {
-	output_ig.push_back(failed);
+	      output_ig.push_back(failed);
       }
       return ResultInformation::FAILED;
     }
@@ -65,8 +65,8 @@ namespace world_representation
     {
       for(ig_active_reconstruction_msgs::InformationGain& ig: call.response.expected_information)
       {
-	IgRetrievalResult result = ros_conversions::igRetrievalResultFromMsg(ig);
-	output_ig.push_back(result);
+        IgRetrievalResult result = ros_conversions::igRetrievalResultFromMsg(ig);
+        output_ig.push_back(result);
       }
       return ResultInformation::SUCCEEDED;
     }
@@ -91,7 +91,7 @@ namespace world_representation
       failed.value = 0;
       for(unsigned int i=0; i<command.metric_names.size(); ++i)
       {
-	output.push_back(failed);
+	      output.push_back(failed);
       }
       return ResultInformation::FAILED;
     }

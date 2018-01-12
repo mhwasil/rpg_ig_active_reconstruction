@@ -107,8 +107,7 @@ int main(int argc, char **argv)
   ros_tools::getParamIfAvailable<unsigned int,int>(ig_config.voxels_in_void_ray,"ig/voxels_in_void_ray");
   
   
-  
-  
+   
   // Instantiate main world object
   // .............................................................................................
   WorldRepresentation world_representation(octree_config);
