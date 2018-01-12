@@ -2,8 +2,8 @@
 <launch>
     <arg name="ws" default="ws01"/>
     <node pkg="ig_active_reconstruction_youbot" type="yb_joints_to_pose_converter" name="yb_joints_to_pose_converter" clear_params="true" output="screen">
-        <param name="yb_joints_space_file_path" value="$(find ig_active_reconstruction_youbot)/config/yb_6_views_joints.txt" />
-        <param name="yb_poses_space_file_path" value="$(find ig_active_reconstruction_youbot)/config/yb_6_views_poses.txt" /> <!--replace this with ws name for more than one ws, and replace this with pose name directly for only one ws-->
+        <param name="yb_joints_space_file_path" value="$(find ig_active_reconstruction_youbot)/config/yb_4_joint_configuration.txt" />
+        <param name="yb_poses_space_file_path" value="$(find ig_active_reconstruction_youbot)/config/yb_4_poses.txt" /> <!--replace this with ws name for more than one ws, and replace this with pose name directly for only one ws-->
         <param name="yb_cam3d_frame_name" value="arm_cam3d_depth_frame" />
         <param name="yb_world_frame_name" value="map" />
     </node>

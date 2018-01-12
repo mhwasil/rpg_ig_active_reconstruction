@@ -17,10 +17,10 @@
     <param name="use_bounding_box" value="true" />
     <param name="bounding_box_min_point_m/x" value="-1.6" />
     <param name="bounding_box_min_point_m/y" value="-0.8" />
-    <param name="bounding_box_min_point_m/z" value="-0.01" />
+    <param name="bounding_box_min_point_m/z" value="0.009" />
     <param name="bounding_box_max_point_m/x" value="1.0" />
     <param name="bounding_box_max_point_m/y" value="2.6" />
-    <param name="bounding_box_max_point_m/z" value="0.08" />
+    <param name="bounding_box_max_point_m/z" value="0.20" />
     <param name="max_sensor_range_m" value="1.5" /> <!--default 1.5-->
     
     <!-- Occlusion calculation configuration -->
