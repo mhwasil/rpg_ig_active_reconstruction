@@ -36,6 +36,7 @@ namespace ig_active_reconstruction
   : discard_visited(true)
   , max_visits(1)
   , random_view(false)
+  , object_detector(false)
   {
   }
   
@@ -219,7 +220,9 @@ namespace ig_active_reconstruction
     detected_obj_num_ = 0;
     counted_ = false;
     //define publisher for e_add_cloud_start
-    ros::Publisher client_e_add_cloud_start = nh.advertise<std_msgs::String>("/mcr_perception/cloud_accumulator/event_in", 1);
+    if (config_.object_detector == true){
+      ros::Publisher client_e_add_cloud_start = nh.advertise<std_msgs::String>("/mcr_perception/cloud_accumulator/event_in", 1);
+    }
     
     // preparation
     goal_evaluation_module_->reset();
@@ -339,33 +342,35 @@ namespace ig_active_reconstruction
 
       //add point cloud accumulator
       //..............................................................................................................
-      int numb_subscriber = 0;
-      std_msgs::String cloud_msg;
-      cloud_msg.data = "e_add_cloud_start";
+      if (config_.object_detector == true){
+        int numb_subscriber = 0;
+        std_msgs::String cloud_msg;
+        cloud_msg.data = "e_add_cloud_start";
 
-      while(numb_subscriber == 0)
-      {
-        client_e_add_cloud_start.publish(cloud_msg);
-        numb_subscriber = client_e_add_cloud_start.getNumSubscribers();
-      }
-      
-      if (iteration_number % 2 == 0)
-      {
-        ROS_INFO("Running object detector...");
-        std_msgs::Int32 obj_msg;
-        obj_msg.data = 2;
+        while(numb_subscriber == 0)
+        {
+          client_e_add_cloud_start.publish(cloud_msg);
+          numb_subscriber = client_e_add_cloud_start.getNumSubscribers();
+        }
+        
+        if (iteration_number % 2 == 0)
+        {
+          ROS_INFO("Running object detector...");
+          std_msgs::Int32 obj_msg;
+          obj_msg.data = 2;
 
-        std_msgs::Int32 obj_result = youbot_comm_unit_->runObjectDetector(obj_msg);
+          std_msgs::Int32 obj_result = youbot_comm_unit_->runObjectDetector(obj_msg);
 
-        std::cout << "Obj detector result: " << obj_result.data << "\n";
+          std::cout << "Obj detector result: " << obj_result.data << "\n";
+        }
       }
        
       // check the viewspace......................................................
-      std::map<views::View::IdType, views::View > views_index_map = viewspace_->get_views_index_map_();
+/*       std::map<views::View::IdType, views::View > views_index_map = viewspace_->get_views_index_map_();
       for ( auto i : views_index_map) 
       {
         std::cout<<i.first<<", "<<i.second<<" \n";
-      }
+      } */
       
       //...................
       //set workstation constraint
