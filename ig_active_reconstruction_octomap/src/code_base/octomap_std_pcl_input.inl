@@ -110,31 +110,31 @@ namespace octomap
       // maxrange check
       point3d curr_ray = point - sensor_origin;
       
-      if(i%100==0)
-	std::cout<<"\nBuilding iterator set: "<<i<<"/"<<valid_indices.size();
+      if(i%10000==0)
+	      std::cout<<"\nBuilding iterator set: "<<i<<"/"<<valid_indices.size();
       
       if ((config_.max_sensor_range_m< 0.0) || (curr_ray.norm() <= (config_.max_sensor_range_m+0.000001)) )
       {
-	// free cells
-	if(this->link_.octree->computeRayKeys(sensor_origin, point, key_ray_temp))
-	{
-	  free_cells.insert(key_ray_temp.begin(), key_ray_temp.end());
-	}
-	// occupied endpoint
-	OcTreeKey key;
-	if(this->link_.octree->coordToKeyChecked(point, key))
-	{
-	  occupied_cells.insert(key);
-	}
+        // free cells
+        if(this->link_.octree->computeRayKeys(sensor_origin, point, key_ray_temp))
+        {
+          free_cells.insert(key_ray_temp.begin(), key_ray_temp.end());
+        }
+        // occupied endpoint
+        OcTreeKey key;
+        if(this->link_.octree->coordToKeyChecked(point, key))
+        {
+          occupied_cells.insert(key);
+        }
       }
       else
       {
-	// ray longer than max range
-	point3d new_end = sensor_origin + curr_ray.normalized() * config_.max_sensor_range_m;
-	if (this->link_.octree->computeRayKeys(sensor_origin, new_end, key_ray_temp))
-	{
-	  free_cells.insert(key_ray_temp.begin(), key_ray_temp.end());
-	}
+        // ray longer than max range
+        point3d new_end = sensor_origin + curr_ray.normalized() * config_.max_sensor_range_m;
+        if (this->link_.octree->computeRayKeys(sensor_origin, new_end, key_ray_temp))
+        {
+          free_cells.insert(key_ray_temp.begin(), key_ray_temp.end());
+        }
       }
     }
     
@@ -145,30 +145,30 @@ namespace octomap
     for(KeySet::iterator it = free_cells.begin(), end=free_cells.end(); it!= end; ++it)
     {
       if( count++%1000==0)
-	std::cout<<"\nInserting free: "<<count<<"/"<<free_cells.size();
+	      std::cout<<"\nInserting free: "<<count<<"/"<<free_cells.size();
       
       if( occupied_cells.find(*it) == occupied_cells.end() )
       {
-	typename TREE_TYPE::NodeType* voxel = this->link_.octree->search(*it);
-	
-	if( voxel==NULL )
-	{
-	  voxel = this->link_.octree->updateNode(*it, false);
-	  voxel->updateHasMeasurement(true);
-	}
-	else
-	{
-	  if( !voxel->hasMeasurement() )
-	  {
-	    float logOddsFirstMiss = ::octomap::logodds( this->link_.octree->config().miss_probability );
-	    voxel->setLogOdds(logOddsFirstMiss);
-	    voxel->updateHasMeasurement(true);
-	  }
-	  else
-	  {
-	    this->link_.octree->updateNode(*it, false);
-	  }
-	}
+        typename TREE_TYPE::NodeType* voxel = this->link_.octree->search(*it);
+        
+        if( voxel==NULL )
+        {
+          voxel = this->link_.octree->updateNode(*it, false);
+          voxel->updateHasMeasurement(true);
+        }
+        else
+        {
+          if( !voxel->hasMeasurement() )
+          {
+            float logOddsFirstMiss = ::octomap::logodds( this->link_.octree->config().miss_probability );
+            voxel->setLogOdds(logOddsFirstMiss);
+            voxel->updateHasMeasurement(true);
+          }
+          else
+          {
+            this->link_.octree->updateNode(*it, false);
+          }
+        }
       }
     }
     
@@ -177,29 +177,30 @@ namespace octomap
     for (KeySet::iterator it = occupied_cells.begin(), end=free_cells.end(); it!= end; ++it)
     {
       if( count++%100==0)
-	std::cout<<"\nInserting occupied: "<<count<<"/"<<occupied_cells.size();
+	      std::cout<<"\nInserting occupied: "<<count<<"/"<<occupied_cells.size();
       
       typename TREE_TYPE::NodeType* voxel = this->link_.octree->search(*it);
       
       if( voxel==NULL )
       {
-	voxel = this->link_.octree->updateNode(*it, true);
-	voxel->updateHasMeasurement(true);
+        voxel = this->link_.octree->updateNode(*it, true);
+        voxel->updateHasMeasurement(true);
       }
       else
       {
-	if( !voxel->hasMeasurement() )
-	{
-	  float logOddsFirstHit = ::octomap::logodds( this->link_.octree->config().hit_probability );
-	  voxel->setLogOdds(logOddsFirstHit);
-	  voxel->updateHasMeasurement(true);
-	}
-	else
-	{
-	  this->link_.octree->updateNode(*it, true);
-	}
+        if( !voxel->hasMeasurement() )
+        {
+          float logOddsFirstHit = ::octomap::logodds( this->link_.octree->config().hit_probability );
+          voxel->setLogOdds(logOddsFirstHit);
+          voxel->updateHasMeasurement(true);
+        }
+        else
+        {
+          this->link_.octree->updateNode(*it, true);
+        }
       }
     }
+
     if( this->occlusion_calculator_!=NULL )
     {
       std::cout<<"\nCalling occlusion calculator";
