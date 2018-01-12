@@ -62,7 +62,8 @@ int main(int argc, char **argv)
   std::string yb_poses_space_file_path;
   std::string yb_workstations_file_path;
   std::string start_ws;
-  bool ws_constraint = false;
+  bool ws_constraint;
+  ros_tools::getParam(ws_constraint, "ws_constraint", false);
   ros_tools::getExpParam(yb_joints_space_file_path,"yb_joints_space_file_path");
   ros_tools::getExpParam(yb_poses_space_file_path,"yb_poses_space_file_path");
   ros_tools::getExpParam(yb_workstations_file_path, "yb_workstations_file_path");

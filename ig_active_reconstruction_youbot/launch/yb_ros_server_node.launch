@@ -7,6 +7,7 @@
         <param name="yb_poses_space_file_path" value="$(find ig_active_reconstruction_youbot)/config/yb_44_views_poses.txt" />
 		<param name="yb_workstations_file_path" value="$(find ig_active_reconstruction_youbot)/config/yb_44_views_workstations.txt" />
 		<param name="start_ws" value="WS01" />
+		<param name="ws_constraint" value="true" />
 	</node>
 
 	<group if="$(arg object_detector)" >
