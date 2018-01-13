@@ -161,7 +161,7 @@ namespace ig_active_reconstruction
       }
     }
 
-    std::map<std::string, std::vector<int>> ws_combined;
+/*    std::map<std::string, std::vector<int>> ws_combined;
 
     for (unsigned int i = 0; i < id_set.size(); ++i)
     {
@@ -266,7 +266,7 @@ namespace ig_active_reconstruction
 
       }
     }
-    */
+    *
     //......
     //calculate utility of each view in each workstation
     //contain a map <viewpoint, utility>
@@ -338,8 +338,9 @@ namespace ig_active_reconstruction
       final_nbv = nbv;
     } 
     std::cout<<"\nSelected workstation: "<<selected_ws<<", in View: "<<final_nbv<<"\n";
-    return final_nbv;
-    //return nbv;
+    return final_nbv;*/
+    
+    return nbv;
   }
   
   void WeightedLinearUtility::getIg(std::vector<double>& ig_vector,double& total_ig, 
