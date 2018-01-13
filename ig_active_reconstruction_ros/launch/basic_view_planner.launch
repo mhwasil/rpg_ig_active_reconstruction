@@ -5,7 +5,7 @@
     <param name="discard_visited" value="true" />
     <param name="max_visits" value="1" />
     <param name="cost_weight" value="1" />
-    <param name="max_calls" value="6" /> <!-- default 20 -->
+    <param name="max_calls" value="20" /> <!-- default 20 -->
     <param name="random_view" value="false" />
     <param name="object_detector" value="false" />
     <rosparam param="ig_names">[OcclusionAwareIg, UnobservedVoxelIg, RearSideVoxelIg, RearSideEntropyIg, ProximityCountIg, VasquezGomezAreaFactorIg, AverageEntropyIg]</rosparam>
