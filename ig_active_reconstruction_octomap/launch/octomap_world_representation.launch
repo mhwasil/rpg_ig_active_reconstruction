@@ -15,13 +15,13 @@
    
     <!--Bounding box works as the limit of how much points we want to cover-->
     <param name="use_bounding_box" value="true" />
-    <param name="bounding_box_min_point_m/x" value="0.517" /> <!--all arena = -0.34-->
+    <param name="bounding_box_min_point_m/x" value="-0.34" /> <!--all arena = -0.34, 0.517 only for longest one-->
     <param name="bounding_box_min_point_m/y" value="-0.3" />
-    <param name="bounding_box_min_point_m/z" value="0.10" />
+    <param name="bounding_box_min_point_m/z" value="0.015" />
     <param name="bounding_box_max_point_m/x" value="1.35" />
     <param name="bounding_box_max_point_m/y" value="2.2" />
-    <param name="bounding_box_max_point_m/z" value="0.40" />
-    <param name="max_sensor_range_m" value="1.0" /> <!--default 1.5-->
+    <param name="bounding_box_max_point_m/z" value="0.20" />
+    <param name="max_sensor_range_m" value="1.5" /> <!--default 1.5-->
     
     <!-- Occlusion calculation configuration -->
     <param name="occlusion_update_dist_m" value="0.3" />
