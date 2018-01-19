@@ -51,8 +51,8 @@ namespace octomap
     
     for( size_t i = 0; i<valid_indices.size(); ++i )
     {
-      if( i%10000==0)
-	      std::cout<<"\ncalculating occlusion for point "<<i<<"/"<<valid_indices.size();
+      //if( i%10000==0)
+	    //  std::cout<<"\ncalculating occlusion for point "<<i<<"/"<<valid_indices.size();
       
       //point3d point(it->x, it->y, it->z);
       point3d point(pcl.points[valid_indices[i]].x, pcl.points[valid_indices[i]].y, pcl.points[valid_indices[i]].z);
