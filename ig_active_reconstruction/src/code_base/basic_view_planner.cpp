@@ -27,6 +27,7 @@
 #include <std_msgs/Int32.h>
 #include <string> 
 #include "ig_active_reconstruction_msgs/ybMoveToJoints.h"
+#include "time.h"
 
 
 namespace ig_active_reconstruction
@@ -254,6 +255,9 @@ namespace ig_active_reconstruction
     unsigned int moving_nr = 0;
     int iteration_number = 1;
     
+    //Timer for evaluation
+    const clock_t begin_time = clock();
+
     do
     {
       // determine view candidate subset of viewspace .....................
@@ -426,6 +430,7 @@ namespace ig_active_reconstruction
       {
         std::cout<<"\n\nTermination criteria was fulfilled. Reconstruction procedure ends.\n\n";
         std::cout<<"Number of moving: "<< moving_nr << "\n";
+        std::cout <<"Computation time: " <<float( clock () - begin_time ) /  CLOCKS_PER_SEC;
         break;
       }
       
