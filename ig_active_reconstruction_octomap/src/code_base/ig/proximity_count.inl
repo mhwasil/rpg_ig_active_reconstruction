@@ -92,8 +92,8 @@ namespace octomap
       double dist = node->occDist();
       if( !node->hasMeasurement() && dist>0 )
       {
-	ig_ += node->maxDist()-dist;
-	++voxel_count_;
+      	ig_ += node->maxDist()-dist;
+      	++voxel_count_;
       }	
     }
     
