@@ -80,7 +80,7 @@ namespace world_representation
   TEMPT
   bool CSCOPE::igComputationService( ig_active_reconstruction_msgs::InformationGainCalculation::Request& req, ig_active_reconstruction_msgs::InformationGainCalculation::Response& res )
   {
-    ROS_INFO("Received 'ig computation' call.");
+    //ROS_INFO("Received 'ig computation' call.");
     if( linked_interface_ == NULL )
     {
       ig_active_reconstruction_msgs::InformationGain failed;

@@ -109,17 +109,17 @@ namespace octomap
       
       BOOST_FOREACH( std::string& name, command.metric_names)
       {
-	typename IgFactory::TypePtr ig_metric = this->ig_factory_.get(name);
-	if( ig_metric==NULL )
-	{
-	  res.status = ResultInformation::UNKNOWN_METRIC;
-	}
-	else
-	{
-	  res.status = ResultInformation::SUCCEEDED;
-	  ig_set.push_back(ig_metric);
-	}
-	output_ig.push_back(res);
+	    typename IgFactory::TypePtr ig_metric = this->ig_factory_.get(name);
+	    if( ig_metric==NULL )
+	    {
+	        res.status = ResultInformation::UNKNOWN_METRIC;
+	    }
+	    else
+	    {
+	        res.status = ResultInformation::SUCCEEDED;
+	        ig_set.push_back(ig_metric);
+	    }
+	    output_ig.push_back(res);
       }
     }
     
@@ -133,10 +133,10 @@ namespace octomap
       //std::cout<<"\norigin:\n"<<ray.origin<<"\ndirection:\n"<<ray.direction<<"\n";
       BOOST_FOREACH( typename InformationGain<TREE_TYPE>::Ptr& ig, ig_set )
       {
-	ig->makeReadyForNewRay();
+	    ig->makeReadyForNewRay();
       }
       /*if(i%100==0)
-	std::cout<<"\nCalculating ray "<<i<<"/"<<ray_set->size();*/
+	        std::cout<<"\nCalculating ray "<<i<<"/"<<ray_set->size();*/
       calculateIgsOnRay(ray,ig_set, ray_cast_settings);
     }
     
@@ -146,9 +146,9 @@ namespace octomap
     {
       if( res.status == ResultInformation::SUCCEEDED )
       {
-	res.predicted_gain = (*ig_it)->getInformation();
-	std::cout<<"\nPredicted gain is: "<<res.predicted_gain;
-	++ig_it;
+	    res.predicted_gain = (*ig_it)->getInformation();
+	    //std::cout<<"\nPredicted gain is: "<<res.predicted_gain;
+	    ++ig_it;
       }
     }
     
