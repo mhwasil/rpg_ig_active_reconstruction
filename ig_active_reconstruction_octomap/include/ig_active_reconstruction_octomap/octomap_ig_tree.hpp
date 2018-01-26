@@ -88,11 +88,11 @@ namespace octomap
     * ends up in the classIDMapping only once
     */
     class StaticMemberInitializer{
-    public:
-    StaticMemberInitializer() {
-	IgTree* tree = new IgTree(0.1);
-	AbstractOcTree::registerTreeType(tree);
-    }
+      public:
+        StaticMemberInitializer() {
+          IgTree* tree = new IgTree(0.1);
+          AbstractOcTree::registerTreeType(tree);
+        }
     };
     //! to ensure static initialization (only once)
     static StaticMemberInitializer igTreeMemberInit;

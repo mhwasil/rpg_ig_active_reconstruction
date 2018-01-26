@@ -267,64 +267,6 @@ namespace ig_active_reconstruction
       {
         break;
       }
-
-      //std::string old_ws;
-/*       views::ViewSpace::IdSet new_view_candidate_ids;
-      if(iteration_number == 0)
-      {
-        new_view_candidate_ids = view_candidate_ids;
-      }
-      else
-      {
-        if (old_ws == "WS01")
-        {
-          for (unsigned int i = 0; i < view_candidate_ids.size(); ++i)
-          {
-            if (view_candidate_ids[i] > 12)
-            {
-              new_view_candidate_ids.push_back(view_candidate_ids[i]);
-            }
-
-          }
-          {
-            if (view_candidate_ids[i] > 12)
-            {
-              new_view_candidate_ids.push_back(view_candidate_ids[i]);
-            }
-
-          }
-        }
-        else if (old_ws == "WS02")
-        {
-          for (unsigned int i = 0; i < view_candidate_ids.size(); ++i)
-          {
-            if (view_candidate_ids[i] < 12 || view_candidate_ids[i] >= 24)
-            {
-              new_view_candidate_ids.push_back(view_candidate_ids[i]);
-            }
-          }
-        }
-        else if (old_ws == "WS03")
-        {
-          for (unsigned int i = 0; i < view_candidate_ids.size(); ++i)
-          {
-            if (view_candidate_ids[i] < 24 || view_candidate_ids[i] >= 36)
-            {
-              new_view_candidate_ids.push_back(view_candidate_ids[i]);
-            }
-          }
-        }
-        else if (old_ws == "WS04")
-        {
-          for (unsigned int i = 0; i < view_candidate_ids.size(); ++i)
-          {
-            if (view_candidate_ids[i] < 36)
-            {
-              new_view_candidate_ids.push_back(view_candidate_ids[i]);
-            }
-          }
-        }
-      } */
       
       // receive data....................................................
       robot::CommunicationInterface::ReceptionInfo data_retrieval_status;
@@ -401,22 +343,6 @@ namespace ig_active_reconstruction
         ROS_INFO("NBV is selected randomly");
         nbv_id = view_candidate_ids[random_id];
       }
-/*       if (nbv_id >= 0 && nbv_id <= 12)
-      {
-        old_ws = "WS01";
-      }
-      else if (nbv_id >= 12 && nbv_id<=22 )
-      {
-        old_ws = "WS02";
-      }
-      else if (nbv_id>=24 && nbv_id<=34 )
-      {
-        old_ws = "WS03";
-      }
-      else if (nbv_id>=36 && nbv_id <=46 )
-      {
-        old_ws = "WS04";
-      } */
 
       //result for next view (the next pose)
       views::View nbv = viewspace_->getView(nbv_id);
@@ -458,35 +384,6 @@ namespace ig_active_reconstruction
       	pausePoint();
 	
       }while(!successfully_moved);
-
-      /*bool successfully_move_arm = false;
-      do
-      {
-        ros::ServiceClient joint_client = nh.serviceClient<ig_active_reconstruction_msgs::ybMoveToJoints>("youbot/move_to_joints");
-
-        ig_active_reconstruction_msgs::ybMoveToJoints move_join_srv;
-        std::string nbv_id_string = std::to_string(nbv_id);
-        move_join_srv.request.id = nbv_id_string;
-
-        ros::Publisher pub = nh.advertise<std_msgs::String>("text", 5);
-        std_msgs::String str;
-        str.data = "ARM IS MOVING";
-        pub.publish(str);
-
-        if (joint_client.call(move_join_srv))
-        {
-          ROS_INFO("Successfully moving arm");
-        }
-        else
-        {
-          ROS_ERROR("Failed to call service youbot/move_to_joints");
-        }
-        successfully_move_arm = move_join_srv.response.success;
-        pausePoint();
-
-      }while(!successfully_move_arm);*/
-
-      //std::cout<<"Number of moving: " << moving_nr << "\n";
 
       // update viewspace
       viewspace_->setVisited(nbv_id);

@@ -47,15 +47,11 @@ void print_workstations( std::map<int, std::string> workstations_map)
 int main(int argc, char **argv)
 {
   ros::init(argc, argv, "yb_ros_server_node");
-  //moveit::planning_interface::MoveGroup group("arm_1");
-  //moveit::planning_interface::MoveGroupInterface move_group("arm_1");
   ros::AsyncSpinner spinner(1);
   spinner.start();
 
   //Create client for yb_ros_server
   ros::NodeHandle nh;
-  //ros::ServiceClient yb_ros_client_ = nh.serviceClient<ig_active_reconstruction_msgs::yb_move_arm_using_joints>("youbot/move_to");
-  //ig_active_reconstruction_msgs::yb_move_arm_using_joints srv_;
 
   //Load file from param
   std::string yb_joints_space_file_path;
@@ -123,12 +119,6 @@ int main(int argc, char **argv)
   std::map<int, std::string> workstations_map = view_space.get_workstations_map();
 
   print_workstations(workstations_map);
-  //  std::map<std::string, double> joints = joints_map.at(0);
-  //  for (auto joints_ : joints)
-  //  {
-  //    std::cout << joints_.second << " ";
-  //  }
-  //  std::cout << "\n";
 
   ros::spin();
 }

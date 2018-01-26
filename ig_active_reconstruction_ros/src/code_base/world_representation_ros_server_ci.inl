@@ -90,7 +90,7 @@ namespace world_representation
       unsigned int number_of_metrics = (!req.command.metric_ids.empty())?req.command.metric_ids.size():req.command.metric_names.size();
       for(unsigned int i=0; i<number_of_metrics; ++i)
       {
-	res.expected_information.push_back(failed);
+	      res.expected_information.push_back(failed);
       }
       return true;
     }
@@ -119,7 +119,7 @@ namespace world_representation
       unsigned int number_of_metrics = req.metric_names.size();
       for(unsigned int i=0; i<number_of_metrics; ++i)
       {
-	res.results.push_back(failed);
+	      res.results.push_back(failed);
       }
       return true;
     }

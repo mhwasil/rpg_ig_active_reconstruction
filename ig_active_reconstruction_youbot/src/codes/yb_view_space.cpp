@@ -95,13 +95,11 @@ namespace views
     wrapper["arm_joint_3"] = joint_2;
     wrapper["arm_joint_4"] = joint_3;
     wrapper["arm_joint_5"] = joint_4;
-    //joints_map_.insert(std::pair<std::string, std::map<std::string, double>>(id,wrapper));
     joints_map_[id] = wrapper;
   }
 
   void ViewSpace::set_poses_map( geometry_msgs::Pose& pose, int id )
   {
-    ///poses_map_.insert(std::pair<int, geometry_msgs::Pose>(id, pose));
     poses_map_[id] = pose;
   }
 

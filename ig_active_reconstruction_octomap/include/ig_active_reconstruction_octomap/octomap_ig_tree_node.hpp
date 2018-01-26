@@ -98,11 +98,11 @@ namespace octomap
     // sets occDist if it's smaller than the previous value
     void updateOccDist( double occDist )
     {
-	if(occ_dist_==-1)
-	    occ_dist_=occDist;
-	else
-	    occ_dist_=std::min(occ_dist_,occDist);
-	
+      if(occ_dist_==-1)
+          occ_dist_=occDist;
+      else
+          occ_dist_=std::min(occ_dist_,occDist);
+      
     };
     
     double maxDist(){return max_dist_;};

@@ -43,8 +43,6 @@ namespace robot
     ws_constraint_ = ws_constraint;
     robot_moving_service_ = nh.advertiseService("youbot/move_to", &RosServerYoubot::moveToService, this );
     robot_moving_to_init_service_ = nh.advertiseService("youbot/move_to_init", &RosServerYoubot::move_base_safe_to_init, this);
-
-    //robot_moving_to_joints_service_ = nh.advertiseService("youbot/move_to_joints", &RosServerYoubot::moveToJointsService, this );
   }
 
 	bool RosServerYoubot::moveToService( ig_active_reconstruction_msgs::youbotMoveToOrder::Request& req, 
@@ -152,25 +150,11 @@ namespace robot
     return nav_result;
   }
 
-  bool RosServerYoubot::moveToJointsService( ig_active_reconstruction_msgs::ybMoveToJoints::Request& req, 
-                                    ig_active_reconstruction_msgs::ybMoveToJoints::Response& res )
-  {
-   
-    std::string id_ = req.id;
-    int id = std::stoi(id_);
-    std::cout<< "Id = " << id;
-    //joints_map_ = view_space.get_joints_map().at(id) ;
-    res.success = RosServerYoubot::moveArmUsingJoints( joints_map_.at(id) );
-    return res.success;
-  }
-
   bool RosServerYoubot::moveArmUsingJoints( std::map<std::string, double> joints_map )
   {
     robot_state::RobotStatePtr current_state;
     moveit::planning_interface::MoveGroup group("arm_1");
-    //ros::AsyncSpinner spinner(1);
-    //spinner.start();
-    //set currentState to StartState
+
     group.setStartStateToCurrentState();
     
     //group.setPlanningTime(10);
@@ -188,7 +172,6 @@ namespace robot
       return false;
     }
     
-    //non blocking request
     group.asyncExecute(plan); 
     
     //set currentState to StartState
@@ -197,7 +180,7 @@ namespace robot
     // cancel motion after some times
     sleep(0.1);
     group.stop();
-    sleep(1.0); //wait for stop command
+    sleep(1.0); 
 
     return true;
   }

@@ -45,7 +45,7 @@ namespace multikit
     BOOST_FOREACH( Entry& entry, entries_ )
     {
       if( entry.name==name )
-	new_object = entry.create();
+	    new_object = entry.create();
     }
     
     return new_object;
@@ -83,7 +83,7 @@ namespace multikit
     {
       if( entry.name==name )
       {
-	return entry.id;
+	      return entry.id;
       }
     }
     // not found

@@ -51,13 +51,13 @@ namespace octomap
       struct Config
       {
       public:
-	Config();
+	      Config();
 	
       public:
-	double p_unknown_prior;//! Prior occupancy likelihood for unknown voxels. Default: 0.5.
-	double p_unknown_upper_bound; //! Upper bound for voxels to still be considered uncertain. Default: 0.8.
-	double p_unknown_lower_bound; //! Lower bound for voxels to still be considered uncertain. Default: 0.2.
-	unsigned int voxels_in_void_ray; //! How many voxels are considered to be part of a void ray. Default: 100.
+        double p_unknown_prior;//! Prior occupancy likelihood for unknown voxels. Default: 0.5.
+        double p_unknown_upper_bound; //! Upper bound for voxels to still be considered uncertain. Default: 0.8.
+        double p_unknown_lower_bound; //! Lower bound for voxels to still be considered uncertain. Default: 0.2.
+        unsigned int voxels_in_void_ray; //! How many voxels are considered to be part of a void ray. Default: 100.
       } config;
       
     public:

@@ -47,13 +47,13 @@ namespace octomap
      */
     class LinkedObject
     {
-    public:
-      /*! Links to a WorldRepresentation object, among others sets the octree to the one encapsulated in the world representation.
-      */
-      virtual void setLink( Link& link ){ link_=link; };
-      
-    protected:
-      Link link_; //! WorldRepresentation link
+      public:
+        /*! Links to a WorldRepresentation object, among others sets the octree to the one encapsulated in the world representation.
+        */
+        virtual void setLink( Link& link ){ link_=link; };
+        
+      protected:
+        Link link_; //! WorldRepresentation link
     };
     
   public:

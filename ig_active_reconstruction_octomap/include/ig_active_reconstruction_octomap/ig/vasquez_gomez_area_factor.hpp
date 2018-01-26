@@ -42,11 +42,11 @@ namespace octomap
       struct LocalConfig
       {
       public:
-	LocalConfig();
+	      LocalConfig();
 	
       public:
-	double p_occupied_des_; //! Desired occupancy percentage. Default: 0.2
-	double p_occplane_des_; //! Desired occplane percentage. Default: 0.8
+        double p_occupied_des_; //! Desired occupancy percentage. Default: 0.2
+        double p_occplane_des_; //! Desired occplane percentage. Default: 0.8
       } vasquez_config;
       
     public:

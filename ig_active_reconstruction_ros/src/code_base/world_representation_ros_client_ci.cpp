@@ -99,10 +99,10 @@ namespace world_representation
     {
       for(ig_active_reconstruction_msgs::InformationGain& map_metric: call.response.results)
       {
-	MapMetricRetrievalResult result;
-	result.status = ros_conversions::resultInformationFromMsg(map_metric.status);
-	result.value = map_metric.predicted_gain;
-	output.push_back(result);
+        MapMetricRetrievalResult result;
+        result.status = ros_conversions::resultInformationFromMsg(map_metric.status);
+        result.value = map_metric.predicted_gain;
+        output.push_back(result);
       }
       return ResultInformation::SUCCEEDED;
     }

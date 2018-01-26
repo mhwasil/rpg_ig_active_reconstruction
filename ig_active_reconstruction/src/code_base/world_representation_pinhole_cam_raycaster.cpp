@@ -143,8 +143,8 @@ namespace world_representation
     {
       for( double y = min_y; y<=max_y; y+=y_step )
       {
-	RayDirection ray_dir = projectPixelTo3dRay(x,y);
-	ray_directions_->push_back(ray_dir);
+        RayDirection ray_dir = projectPixelTo3dRay(x,y);
+        ray_directions_->push_back(ray_dir);
       }
     }
   }

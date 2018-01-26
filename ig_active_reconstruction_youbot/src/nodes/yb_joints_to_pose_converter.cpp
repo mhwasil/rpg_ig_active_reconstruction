@@ -152,8 +152,6 @@ int main(int argc, char **argv)
 
   //Create client for yb_ros_server
   ros::NodeHandle nh;
-  //ros::ServiceClient yb_ros_client_ = nh.serviceClient<ig_active_reconstruction_msgs::yb_move_arm_using_joints>("youbot/move_to");
-  //ig_active_reconstruction_msgs::yb_move_arm_using_joints srv_;
 
   //Load file from param
   std::string yb_joints_space_file_path;
@@ -186,9 +184,6 @@ int main(int argc, char **argv)
   for (auto map_ : joints_map)
   {
     std::map<std::string, double> wrapper;
-    //std::string key = map_.first;
-    //std::cout << "Int "<<atoi(key.c_str())<<"\n";
-    //int key = std::atoi(map_.first.c_str());
     int key = map_.first;
     std::cout<<"\nInt key: "<<key<<"\n";
     wrapper = map_.second;

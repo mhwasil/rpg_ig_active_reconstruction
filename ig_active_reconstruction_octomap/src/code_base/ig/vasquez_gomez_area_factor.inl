@@ -137,17 +137,17 @@ namespace octomap
     double occ;
     if( node==NULL )
     {
-        occ=utils_.config.p_unknown_prior; // default for unknown
-        if( no_known_voxel_so_far_ )
-        {
-            previous_voxel_free_ = true; // treat unknown at beginning of ray, starting from sensor position as p_free
-        }
-        else
-        {
-            previous_voxel_free_ = false; // treat unknown at beginning of ray, starting from sensor position as p_free
-        }
+      occ=utils_.config.p_unknown_prior; // default for unknown
+      if( no_known_voxel_so_far_ )
+      {
+          previous_voxel_free_ = true; // treat unknown at beginning of ray, starting from sensor position as p_free
+      }
+      else
+      {
+          previous_voxel_free_ = false; // treat unknown at beginning of ray, starting from sensor position as p_free
+      }
 
-        return false;
+      return false;
     }
     else
     {
@@ -156,35 +156,35 @@ namespace octomap
     
     if( !node->hasMeasurement() && node->occDist()!=-1 )
     {
-        ++occplane_count_;
-        ray_is_already_registered_ = true;
-        previous_voxel_free_ = false;
-        return true;
+      ++occplane_count_;
+      ray_is_already_registered_ = true;
+      previous_voxel_free_ = false;
+      return true;
     }
     else
     {
-        no_known_voxel_so_far_=false;
+      no_known_voxel_so_far_=false;
     }
     
     if( utils_.isOccupied(occ) ) // voxel is occupied
     {
-        if( previous_voxel_free_ ) // occupied voxels should only be registered as occupied if they are actually expected to be visible (and not hit from the backside...)
-        {
-            ++occupied_count_;
-        }
-        previous_voxel_free_ = false;
-        ray_is_already_registered_ = true;
-        return true;
+      if( previous_voxel_free_ ) // occupied voxels should only be registered as occupied if they are actually expected to be visible (and not hit from the backside...)
+      {
+        ++occupied_count_;
+      }
+      previous_voxel_free_ = false;
+      ray_is_already_registered_ = true;
+      return true;
     }
     else if( utils_.isUnknown(occ) ) // voxel is unknown
     {
-        previous_voxel_free_ = false;
+      previous_voxel_free_ = false;
         
     }
     else
     {
-        previous_voxel_free_ = true;
-        // void, empty voxels are not of interest
+      previous_voxel_free_ = true;
+     // void, empty voxels are not of interest
     }
     return false;
   }
@@ -213,11 +213,11 @@ namespace octomap
     
     if( percentage<=utils_.vasquez_config.p_occupied_des_ )
     {
-	return a_f1_occu_*x3 + b_f1_occu_*x2;
+	    return a_f1_occu_*x3 + b_f1_occu_*x2;
     }
     else
     {
-	return a_f2_occu_*x3 + b_f2_occu_*x2 + c_f2_occu_*percentage + d_f2_occu_;
+	    return a_f2_occu_*x3 + b_f2_occu_*x2 + c_f2_occu_*percentage + d_f2_occu_;
     }
   }
   

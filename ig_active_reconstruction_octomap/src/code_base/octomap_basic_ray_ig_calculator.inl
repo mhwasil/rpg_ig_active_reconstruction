@@ -63,7 +63,7 @@ namespace octomap
       
       for( unsigned int i=0; i<( !command.metric_ids.empty()?command.metric_ids.size():command.metric_names.size() ); ++i )
       {
-	output_ig.push_back(res);
+	      output_ig.push_back(res);
       }
       return ResultInformation::FAILED;
     }
@@ -89,17 +89,17 @@ namespace octomap
       
       BOOST_FOREACH( unsigned int& id, command.metric_ids )
       {
-	typename IgFactory::TypePtr ig_metric = this->ig_factory_.get(id);
-	if( ig_metric==NULL )
-	{
-	  res.status = ResultInformation::UNKNOWN_METRIC;
-	}
-	else
-	{
-	  res.status = ResultInformation::SUCCEEDED;
-	  ig_set.push_back(ig_metric);
-	}
-	output_ig.push_back(res);
+        typename IgFactory::TypePtr ig_metric = this->ig_factory_.get(id);
+        if( ig_metric==NULL )
+        {
+          res.status = ResultInformation::UNKNOWN_METRIC;
+        }
+        else
+        {
+          res.status = ResultInformation::SUCCEEDED;
+          ig_set.push_back(ig_metric);
+        }
+        output_ig.push_back(res);
       }
     }
     else
@@ -109,17 +109,17 @@ namespace octomap
       
       BOOST_FOREACH( std::string& name, command.metric_names)
       {
-	    typename IgFactory::TypePtr ig_metric = this->ig_factory_.get(name);
-	    if( ig_metric==NULL )
-	    {
-	        res.status = ResultInformation::UNKNOWN_METRIC;
-	    }
-	    else
-	    {
-	        res.status = ResultInformation::SUCCEEDED;
-	        ig_set.push_back(ig_metric);
-	    }
-	    output_ig.push_back(res);
+        typename IgFactory::TypePtr ig_metric = this->ig_factory_.get(name);
+        if( ig_metric==NULL )
+        {
+            res.status = ResultInformation::UNKNOWN_METRIC;
+        }
+        else
+        {
+            res.status = ResultInformation::SUCCEEDED;
+            ig_set.push_back(ig_metric);
+        }
+        output_ig.push_back(res);
       }
     }
     
@@ -133,7 +133,7 @@ namespace octomap
       //std::cout<<"\norigin:\n"<<ray.origin<<"\ndirection:\n"<<ray.direction<<"\n";
       BOOST_FOREACH( typename InformationGain<TREE_TYPE>::Ptr& ig, ig_set )
       {
-	    ig->makeReadyForNewRay();
+	      ig->makeReadyForNewRay();
       }
       /*if(i%100==0)
 	        std::cout<<"\nCalculating ray "<<i<<"/"<<ray_set->size();*/
@@ -146,9 +146,9 @@ namespace octomap
     {
       if( res.status == ResultInformation::SUCCEEDED )
       {
-	    res.predicted_gain = (*ig_it)->getInformation();
-	    //std::cout<<"\nPredicted gain is: "<<res.predicted_gain;
-	    ++ig_it;
+        res.predicted_gain = (*ig_it)->getInformation();
+        //std::cout<<"\nPredicted gain is: "<<res.predicted_gain;
+        ++ig_it;
       }
     }
     
@@ -221,30 +221,30 @@ namespace octomap
       this->link_.octree->computeRayKeys( origin, end_point, ray );
       for( KeyRay::iterator it = ray.begin() ; it!=ray.end(); ++it )
       {
-	point3d coord = this->link_.octree->keyToCoord(*it);
-	typename TREE_TYPE::NodeType* traversedVoxel = this->link_.octree->search(*it);
-	BOOST_FOREACH( typename InformationGain<TREE_TYPE>::Ptr& ig, ig_set )
-	{
-	  ig->includeRayMeasurement( traversedVoxel );
-	}
+        point3d coord = this->link_.octree->keyToCoord(*it);
+        typename TREE_TYPE::NodeType* traversedVoxel = this->link_.octree->search(*it);
+        BOOST_FOREACH( typename InformationGain<TREE_TYPE>::Ptr& ig, ig_set )
+        {
+          ig->includeRayMeasurement( traversedVoxel );
+        }
       }
       
       OcTreeKey end_key;
       if( this->link_.octree->coordToKeyChecked(end_point, end_key) )
       {
-	typename TREE_TYPE::NodeType* traversedVoxel = this->link_.octree->search(end_key);
-	
-	BOOST_FOREACH( typename InformationGain<TREE_TYPE>::Ptr& ig, ig_set )
-	{
-	  ig->includeEndPointMeasurement( traversedVoxel );
-	}
+        typename TREE_TYPE::NodeType* traversedVoxel = this->link_.octree->search(end_key);
+        
+        BOOST_FOREACH( typename InformationGain<TREE_TYPE>::Ptr& ig, ig_set )
+        {
+          ig->includeEndPointMeasurement( traversedVoxel );
+        }
       }
     }
     else
     {
       BOOST_FOREACH( typename InformationGain<TREE_TYPE>::Ptr& ig, ig_set )
       {
-	ig->informAboutVoidRay();
+	      ig->informAboutVoidRay();
       }
     }
   }
